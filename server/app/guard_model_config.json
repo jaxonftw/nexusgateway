@@ -1,0 +1,10 @@
+{
+    "toxic":{
+        "cpu": "curvelaboratorylabs/toxic_ovn_4bit",
+        "gpu": "curvelaboratorylabs/Bolt-Toxic-v1-eetq"
+    },
+    "jailbreak":{
+        "cpu": "curvelaboratorylabs/jailbreak_ovn_4bit",
+        "gpu": "curvelaboratorylabs/Bolt-Guard-EEtq"
+    }
+}
