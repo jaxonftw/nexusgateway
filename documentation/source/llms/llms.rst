@@ -2,19 +2,21 @@
 
 LLMs
 ====
-Curve utilizes purpose-built, industry leading, LLMs to handle the crufty and undifferentiated 
-work around accepting, handling and processing prompts. The following   
 
-Curve-Guard
-----------
-LLM-powered applications are susceptible to prompt attacks, which are prompts intentionally designed to subvert the developer’s 
-intended behavior of the LLM.Curve-Guard is a classifier model trained on a large corpus of attacks, capable of detecting explicitly 
-malicious prompts (and toxicity). 
+Curve utilizes purpose-built, industry leading, LLMs to handle the crufty and undifferentiated work around 
+accepting, handling and processing prompts. The following sections talk about some of the core models that
+are built-in Curve. 
 
-The model is useful as a starting point for identifying and guardrailing against the most risky realistic inputs to
-LLM-powered applications. Our goal in embedding Curve-Guard in the Curve gateway is to enable developers to focus on their business logic
-and factor out security and safety outside application logic. Wth Curve-Guard= developers can take to significantly reduce prompt attack 
-risk while maintaining control over the user experience.
+Curve-Guard-v1
+-------------
+LLM-powered applications are susceptible to prompt attacks, which are prompts intentionally designed to 
+subvert the developer’s intended behavior of the LLM. Curve-Guard-v1 is a classifier model trained on a large 
+corpus of attacks, capable of detecting explicitly malicious prompts (and toxicity). 
+
+The model is useful as a starting point for identifying and guardrailing against the most risky realistic 
+inputs to LLM-powered applications. Our goal in embedding Curve-Guard in the Curve gateway is to enable developers 
+to focus on their business logic and factor out security and safety outside application logic. Wth Curve-Guard-v1 
+developers can take to significantly reduce prompt attack risk while maintaining control over the user experience.
 
 Below is our test results of the strength of our model as compared to Prompt-Guard from `Meta LLama <https://huggingface.co/meta-llama/Prompt-Guard-86M>`_.
 
@@ -135,5 +137,27 @@ Below is our test results of the strength of our model as compared to Prompt-Gua
 
 
 
-Curve-FC1B
----------
+Curve-FC
+-------
+Curve-FC is a lean, powerful and cost-effective agentic model designed for function calling scenarios.
+You can run Curve-FC locally, or use the cloud-hosted version for as little as $0.05/M token (100x cheaper 
+than GPT-4o), with a p50 latency of 200ms (5x faster than GPT-4o), while meeting frontier model performance.
+
+.. Note::
+  Function calling helps you personalize the GenAI experience by calling application-specific operations via 
+  prompts. This involves any predefined functions or APIs you want to expose to perform tasks, gather 
+  information, or manipulate data - via prompts. 
+
+  You can get started with function calling simply by configuring a prompt target with a name, description 
+  and set of parameters needed by a specific backend function or a hosted API. The name, and description helps
+  Curve-FC match a user prompt to a function or API that can process it.
+
+By using Curve-FC, Curve enables you to easily build agentic workflows tailored to domain-specific use cases - 
+from updating insurance claims to creating ad campaigns. Curve-FC analyzes prompts, extracts critical information 
+from prompts, engages in lightweight conversations with the user to gather any missing parameters need before
+handling control back to Curve to make the API call to your hosted backend. Curve-FC handles the muck of information
+extraction so that you can focus on the business logic of your application.
+
+
+
+
