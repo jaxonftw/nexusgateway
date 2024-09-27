@@ -5,8 +5,8 @@
 			"path": "."
 		},
     {
-      "name": "envoyfilter",
-      "path": "envoyfilter"
+      "name": "curve ",
+      "path": "curve "
     },
     {
       "name": "server",

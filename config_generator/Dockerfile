@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 COPY config_generator/requirements.txt .
 RUN pip install -r requirements.txt
 COPY config_generator/config_generator.py .
-COPY envoyfilter/envoy.template.yaml .
-COPY envoyfilter/curvelaboratory-config.yaml .
+COPY curve /envoy.template.yaml .
+COPY curve /curvelaboratory-config.yaml .
 
 CMD ["python", "config_generator.py"]
