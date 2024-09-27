@@ -1,23 +1,37 @@
 .. _curve _overview_prompt_handling:
 
 Prompts
-=======
+-------
 
 Curve's primary design point is to securely accept, process and handle prompts. To do that effectively, 
 Curve relies on Envoy's HTTP `connection management <https://www.envoyproxy.io/docs/envoy/v1.31.2/intro/curve _overview/http/http_connection_management>`_, 
-subsystem and its prompt-handler subsystem engineered with purpose-built :ref:`LLMs <llms_in_curve >` to implement 
-critical functionality on behalf of developers so that you can stay focused on business logic.
+subsystem and its **prompt handler** subsystem engineered with purpose-built :ref:`LLMs <llms_in_curve >` to 
+implement critical functionality on behalf of developers so that you can stay focused on business logic.
+
+.. Note::
+   Curve's **prompt handler** subsystem interacts with the **model** subsytem through Envoy's cluster manager
+   system to ensure robust, resilient and fault-tolerant experience in managing incoming prompts. Read more
+   about the :ref:`model subsystem <curve _model_serving>` and how the LLMs are hosted in Curve.
+
+Messages
+--------
+
+Curve accepts messages directly from the body of the HTTP request in a format that follows the `Hugging Face Messages API <https://huggingface.co/docs/text-generation-inference/en/messages_api>`_. 
+This design allows developers to pass a list of messages, where each message is represented as a dictionary 
+containing two key-value pairs:
+
+    - **Role**: Defines the role of the message sender, such as "user" or "assistant".
+    - **Content**: Contains the actual text of the message.
+
 
 Prompt Guardrails
 -----------------
 
 Curve is engineered with :ref:`Curve-Guard <llms_in_curve >`, an industry leading safety layer, powered by a 
-compact and high-performimg LLM that monitors incoming prompts to detect and reject jailbreak attempts and 
-several safety related concerns, ensuring that unauthorized or harmful behaviors are intercepted early in 
-the process. Curve-Guard is a composite model combining work from the industry leading Meta LLama models and 
-purposely-tuned models that offer exceptional overall performance. 
+compact and high-performimg LLM that monitors incoming prompts to detect and reject jailbreak attempts - 
+ensuring that unauthorized or harmful behaviors are intercepted early in the process.
 
-To add prompt guardrails, see example below: 
+To add jailbreak guardrails, see example below: 
 
 .. literalinclude:: /_config/getting-started.yml
     :language: yaml
@@ -26,9 +40,9 @@ To add prompt guardrails, see example below:
     :caption: :download:`curve -getting-started.yml </_config/getting-started.yml>`
 
 .. Note::
-   As a roadmap item, Curve will expose the ability for developers to define custom guardrails via Curve-Guard-v2, 
-   which would enforce instructions defined by the application developer to control conversational flow. To
-   offer feedback on our roadmap, please visit our `github page <https://github.com/orgs/curvelaboratory/projects/1>`_
+   As a roadmap item, Curve will expose the ability for developers to define custom guardrails via Curve-Guard-v2,
+   and add support for additional safety checks defined by developers and hazardous categories like, violent crimes, privacy, hate,  
+   etc. To offer feedback on our roadmap, please visit our `github page <https://github.com/orgs/curvelaboratory/projects/1>`_
 
 
 Prompt Targets
@@ -131,7 +145,6 @@ Example: Using OpenAI Client with Curve as an Egress Gateway
    )
 
    print("OpenAI Response:", response.choices[0].text.strip())
-
 
 In these examples:
 
