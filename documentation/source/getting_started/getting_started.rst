@@ -4,11 +4,11 @@ Getting Started
 ================
 
 .. sidebar:: Pre-requisites
-    
-    In order for you to get started, please make sure that `Docker <https://www.docker.com/get-started>`_ 
+
+    In order for you to get started, please make sure that `Docker <https://www.docker.com/get-started>`_
     and `Python <https://www.python.org/downloads/>`_ are installed locally.
 
-    As the examples use the pre-built `Curve Docker images <https://hub.docker.com/r/curvelaboratory/Curve>`_, 
+    As the examples use the pre-built `Curve Docker images <https://hub.docker.com/r/curvelaboratory/Curve>`_,
     they should work on the following curve itectures:
 
         - x86_64
@@ -23,11 +23,11 @@ You can also build it from source.
 
 Step 1: Install the Curve CLI
 ----------------------------
-Curve's CLI allows you to manage and interact with the Curve gateway efficiently. To install the CLI, simply 
+Curve's CLI allows you to manage and interact with the Curve gateway efficiently. To install the CLI, simply
 run the following command:
 
-.. code-block:: bash 
-    
+.. code-block:: bash
+
     pip install curve
 
 This will install the curve command-line tool globally on your system.
@@ -35,8 +35,8 @@ This will install the curve command-line tool globally on your system.
 Step 2: Start Curve Gateway
 --------------------------
 
-.. code-block:: bash 
-    
+.. code-block:: bash
+
     curve up --quick-start
 
 Configuration
