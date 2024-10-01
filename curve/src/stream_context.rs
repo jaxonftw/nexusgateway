@@ -473,7 +473,9 @@ impl StreamContext {
 
         let model_resp = &curve _fc_response.choices[0];
 
-        if model_resp.message.tool_calls.is_none() {
+        if model_resp.message.tool_calls.is_none()
+            || model_resp.message.tool_calls.as_ref().unwrap().is_empty()
+        {
             // This means that Curve FC did not have enough information to resolve the function call
             // Curve FC probably responded with a message asking for more information.
             // Let's send the response back to the user to initalize lightweight dialog for parameter collection
@@ -488,12 +490,6 @@ impl StreamContext {
         }
 
         let tool_calls = model_resp.message.tool_calls.as_ref().unwrap();
-        if tool_calls.is_empty() {
-            return self.send_server_error(
-                "No tool calls found in function resolver response".to_string(),
-                Some(StatusCode::BAD_REQUEST),
-            );
-        }
 
         debug!("tool_call_details: {:?}", tool_calls);
         // extract all tool names
