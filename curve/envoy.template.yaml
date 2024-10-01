@@ -171,7 +171,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: function_resolver
+                      address: server
                       port_value: 80
                   hostname: "curve _fc"
 {% for _, cluster in curve _clusters.items() %}
