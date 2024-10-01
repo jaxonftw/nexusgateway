@@ -4,5 +4,5 @@ COPY config_generator/requirements.txt .
 RUN pip install -r requirements.txt
 COPY config_generator/config_generator.py .
 COPY curve /envoy.template.yaml .
-
+COPY config_generator/curve_config_schema.yaml .
 CMD ["python", "config_generator.py"]

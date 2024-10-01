@@ -1,9 +1,11 @@
 import os
 from jinja2 import Environment, FileSystemLoader
 import yaml
+from jsonschema import validate
 
 ENVOY_CONFIG_TEMPLATE_FILE = os.getenv('ENVOY_CONFIG_TEMPLATE_FILE', 'envoy.template.yaml')
 CURVE_CONFIG_FILE = os.getenv('CURVE_CONFIG_FILE', 'curve_config.yaml')
+CURVE_CONFIG_SCHEMA_FILE = os.getenv('CURVE_CONFIG_SCHEMA_FILE', 'curve_config_schema.yaml')
 ENVOY_CONFIG_FILE_RENDERED = os.getenv('ENVOY_CONFIG_FILE_RENDERED', '/usr/src/app/out/envoy.yaml')
 
 env = Environment(loader=FileSystemLoader('./'))
@@ -12,7 +14,17 @@ template = env.get_template('envoy.template.yaml')
 with open(CURVE_CONFIG_FILE, 'r') as file:
     curvelaboratory_config = file.read()
 
+with open(CURVE_CONFIG_SCHEMA_FILE, 'r') as file:
+    curve_config_schema = file.read()
+
 config_yaml = yaml.safe_load(curvelaboratory_config)
+config_schema_yaml = yaml.safe_load(curve_config_schema)
+
+try:
+  validate(config_yaml, config_schema_yaml)
+except Exception as e:
+  print(f"Error validating curve_config file: {CURVE_CONFIG_FILE}, error: {e.message}")
+  exit(1)
 
 inferred_clusters = {}
 
