@@ -7,6 +7,6 @@ pub const USER_ROLE: &str = "user";
 pub const GPT_35_TURBO: &str = "gpt-3.5-turbo";
 pub const ARC_FC_CLUSTER: &str = "curve _fc";
 pub const CURVE_FC_REQUEST_TIMEOUT_MS: u64 = 120000; // 2 minutes
-pub const MODEL_SERVER_NAME: &str = "server";
+pub const MODEL_SERVER_NAME: &str = "curve_server";
 pub const CURVE_ROUTING_HEADER: &str = "x-curve -llm-provider";
 pub const CURVE_MESSAGES_KEY: &str = "curve _messages";

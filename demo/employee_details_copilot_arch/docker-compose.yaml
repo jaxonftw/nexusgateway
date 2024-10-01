@@ -28,7 +28,7 @@ services:
     environment:
       - LOG_LEVEL=debug
 
-  server:
+  curve_server:
     build:
       context: ../../server
       dockerfile: Dockerfile
