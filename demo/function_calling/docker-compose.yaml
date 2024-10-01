@@ -1,14 +1,5 @@
 services:
 
-  config_generator:
-    build:
-      context: ../../
-      dockerfile: config_generator/Dockerfile
-    volumes:
-      - ../../curve /envoy.template.yaml:/usr/src/app/envoy.template.yaml
-      - ./curve_config.yaml:/usr/src/app/curve_config.yaml
-      - ./generated:/usr/src/app/out
-
   curve :
     build:
       context: ../../
@@ -21,14 +12,12 @@ services:
       - /etc/ssl/cert.pem:/etc/ssl/cert.pem
       - ./curve _log:/var/log/
     depends_on:
-      config_generator:
-        condition: service_completed_successfully
       server:
         condition: service_healthy
     environment:
       - LOG_LEVEL=debug
 
-  curve_server:
+  server:
     build:
       context: ../../server
       dockerfile: Dockerfile

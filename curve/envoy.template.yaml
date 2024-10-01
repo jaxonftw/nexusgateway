@@ -132,20 +132,20 @@ static_resources:
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
           sni: api.mistral.ai
-    - name: curve_server
+    - name: server
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       load_assignment:
-        cluster_name: curve_server
+        cluster_name: server
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      address: curve_server
+                      address: server
                       port_value: 80
-                  hostname: "curve_server"
+                  hostname: "server"
     - name: mistral_7b_instruct
       connect_timeout: 5s
       type: STRICT_DNS
@@ -171,7 +171,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: curve_server
+                      address: server
                       port_value: 80
                   hostname: "curve _fc"
 {% for _, cluster in curve _clusters.items() %}

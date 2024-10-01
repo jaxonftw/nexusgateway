@@ -11,10 +11,10 @@ services:
       - /etc/ssl/cert.pem:/etc/ssl/cert.pem
       - ./curve _log:/var/log/
     depends_on:
-      curve_server:
+      server:
         condition: service_healthy
 
-  curve_server:
+  server:
     build:
       context: ../server
       dockerfile: Dockerfile
