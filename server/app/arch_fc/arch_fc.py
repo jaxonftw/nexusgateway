@@ -19,7 +19,7 @@ fc_url = os.getenv("FC_URL", ollama_endpoint)
 mode = os.getenv("MODE", "cloud")
 if mode not in ["cloud", "local-gpu", "local-cpu"]:
     raise ValueError(f"Invalid mode: {mode}")
-curve _api_key = os.getenv("CURVE_API_KEY", "")
+curve _api_key = os.getenv("CURVE_API_KEY", "vllm")
 logger = logging.getLogger("uvicorn.error")
 
 handler = None
