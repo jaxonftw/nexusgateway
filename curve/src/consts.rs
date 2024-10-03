@@ -10,3 +10,4 @@ pub const CURVE_FC_REQUEST_TIMEOUT_MS: u64 = 120000; // 2 minutes
 pub const MODEL_SERVER_NAME: &str = "server";
 pub const CURVE_ROUTING_HEADER: &str = "x-curve -llm-provider";
 pub const CURVE_MESSAGES_KEY: &str = "curve _messages";
+pub const CURVE_PROVIDER_HINT_HEADER: &str = "x-curve -llm-provider-hint";

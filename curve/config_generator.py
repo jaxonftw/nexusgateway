@@ -7,17 +7,32 @@ ENVOY_CONFIG_TEMPLATE_FILE = os.getenv('ENVOY_CONFIG_TEMPLATE_FILE', 'envoy.temp
 CURVE_CONFIG_FILE = os.getenv('CURVE_CONFIG_FILE', '/config/curve_config.yaml')
 ENVOY_CONFIG_FILE_RENDERED = os.getenv('ENVOY_CONFIG_FILE_RENDERED', '/etc/envoy/envoy.yaml')
 CURVE_CONFIG_SCHEMA_FILE = os.getenv('CURVE_CONFIG_SCHEMA_FILE', 'curve_config_schema.yaml')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', False)
+MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY', False)
+
+def add_secret_key_to_llm_providers(config_yaml) :
+    llm_providers = []
+    for llm_provider in config_yaml.get("llm_providers", []):
+        if llm_provider['access_key'] == "$MISTRAL_ACCESS_KEY":
+            llm_provider['access_key'] = MISTRAL_API_KEY
+        elif llm_provider['access_key'] == "$OPENAI_ACCESS_KEY":
+            llm_provider['access_key'] = OPENAI_API_KEY
+        else:
+            llm_provider.pop('access_key')
+        llm_providers.append(llm_provider)
+    config_yaml["llm_providers"] = llm_providers
+    return config_yaml
 
 env = Environment(loader=FileSystemLoader('./'))
 template = env.get_template('envoy.template.yaml')
 
 with open(CURVE_CONFIG_FILE, 'r') as file:
-    curvelaboratory_config = file.read()
+    curve_config_string = file.read()
 
 with open(CURVE_CONFIG_SCHEMA_FILE, 'r') as file:
     curve_config_schema = file.read()
 
-config_yaml = yaml.safe_load(curvelaboratory_config)
+config_yaml = yaml.safe_load(curve_config_string)
 config_schema_yaml = yaml.safe_load(curve_config_schema)
 
 try:
@@ -54,9 +69,16 @@ for name, endpoint_details in endpoints.items():
 
 print("updated clusters", inferred_clusters)
 
+config_yaml = add_secret_key_to_llm_providers(config_yaml)
+curve _llm_providers = config_yaml["llm_providers"]
+curve_config_string = yaml.dump(config_yaml)
+
+print("llm_providers:", curve _llm_providers)
+
 data = {
-    'curvelaboratory_config': curvelaboratory_config,
-    'curve _clusters': inferred_clusters
+    'curve_config': curve_config_string,
+    'curve _clusters': inferred_clusters,
+    'curve _llm_providers': curve _llm_providers
 }
 
 rendered = template.render(data)
