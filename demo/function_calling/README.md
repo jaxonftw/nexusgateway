@@ -28,7 +28,7 @@ This demo shows how you can use intelligent prompt gateway to do function callin
    - On this dashboard you can see reuqest latency and number of requests
 
 # Observability
-Curve gateway publishes stats endpoint at http://localhost:19901/stats. In this demo we are using prometheus to pull stats from envoy and we are using grafan to visalize the stats in dashboard. To see grafana dashboard follow instructions below,
+Curve gateway publishes stats endpoint at http://localhost:19901/stats. In this demo we are using prometheus to pull stats from curve  and we are using grafana to visalize the stats in dashboard. To see grafana dashboard follow instructions below,
 
 1. Start grafana and prometheus using following command
    ```yaml

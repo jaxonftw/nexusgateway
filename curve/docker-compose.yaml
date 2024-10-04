@@ -1,13 +1,11 @@
 services:
   curve:
-    build:
-      context: ../
-      dockerfile: curve /Dockerfile
+    image: curve:latest
     ports:
       - "10000:10000"
-      - "18080:9901"
+      - "19901:9901"
     volumes:
-      - ${CURVE_CONFIG_FILE}:/config/curve_config.yaml
+      - ${CURVE_CONFIG_FILE:-./demos/function_calling/curve _confg.yaml}:/config/curve_config.yaml
       - /etc/ssl/cert.pem:/etc/ssl/cert.pem
       - ./curve _log:/var/log/
     depends_on:
@@ -15,9 +13,7 @@ services:
         condition: service_healthy
 
   server:
-    build:
-      context: ../server
-      dockerfile: Dockerfile
+    image: server:latest
     ports:
       - "18081:80"
     healthcheck:
@@ -26,3 +22,8 @@ services:
         retries: 20
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - OLLAMA_ENDPOINT=${OLLAMA_ENDPOINT:-host.docker.internal}
+      - OLLAMA_MODEL=Curve-Function-Calling-3B-Q4_K_M
+      - MODE=${MODE:-cloud}
+      - FC_URL=${FC_URL:-https://curve -fc-free-trial-4mzywewe.uc.gateway.dev/v1}
