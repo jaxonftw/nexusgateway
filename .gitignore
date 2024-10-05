@@ -24,3 +24,4 @@ demos/network_copilot/ollama/models/
 curve _log/
 curve /tools/*.egg-info
 curve /tools/config
+server/venv_server

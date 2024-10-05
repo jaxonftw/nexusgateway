@@ -1,2 +1,3 @@
 include config/docker-compose.yaml
 include config/curve_config_schema.yaml
+include config/stage.env

@@ -7,10 +7,11 @@ services:
     volumes:
       - ${CURVE_CONFIG_FILE:-./demos/function_calling/curve _confg.yaml}:/config/curve_config.yaml
       - /etc/ssl/cert.pem:/etc/ssl/cert.pem
-      - ./curve _log:/var/log/
     depends_on:
       server:
         condition: service_healthy
+    env_file:
+      - stage.env
 
   server:
     image: server:latest

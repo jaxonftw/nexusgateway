@@ -69,8 +69,6 @@ def validate_and_render_schema():
     curve _llm_providers = config_yaml["llm_providers"]
     curve_config_string = yaml.dump(config_yaml)
 
-    print("llm_providers:", curve _llm_providers)
-
     data = {
         'curve_config': curve_config_string,
         'curve _clusters': inferred_clusters,
