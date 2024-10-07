@@ -5,14 +5,13 @@ import pkg_resources
 import select
 from utils import run_docker_compose_ps, print_service_status, check_services_state
 
-def start_curve (curve_config_file, env, log_timeout=120, check_interval=1):
+def start_curve (curve_config_file, env, log_timeout=120):
     """
     Start Docker Compose in detached mode and stream logs until services are healthy.
 
     Args:
         path (str): The path where the prompt_confi.yml file is located.
         log_timeout (int): Time in seconds to show logs before checking for healthy state.
-        check_interval (int): Time in seconds between health status checks.
     """
 
     compose_file = pkg_resources.resource_filename(__name__, 'config/docker-compose.yaml')
@@ -96,3 +95,33 @@ def stop_curve ():
 
     except subprocess.CalledProcessError as e:
         print(f"Failed to shut down services: {str(e)}")
+
+def start_curve _modelserver():
+    """
+    Start the model server. This assumes that the curve_modelserver package is installed locally
+
+    """
+    try:
+        subprocess.run(
+            ['curve_modelserver', 'restart'],
+            check=True,
+        )
+        print("Successfull run the curve server")
+    except subprocess.CalledProcessError as e:
+        print (f"Failed to start server. Please check curve_modelserver logs")
+        sys.exit(1)
+
+def stop_curve _modelserver():
+    """
+    Stop the model server. This assumes that the curve_modelserver package is installed locally
+
+    """
+    try:
+        subprocess.run(
+            ['curve_modelserver', 'stop'],
+            check=True,
+        )
+        print("Successfull stopped the curve server")
+    except subprocess.CalledProcessError as e:
+        print (f"Failed to start server. Please check curve_modelserver logs")
+        sys.exit(1)

@@ -5,7 +5,7 @@ import config_generator
 import pkg_resources
 import sys
 import subprocess
-from core import start_curve , stop_curve 
+from core import start_curve _modelserver, stop_curve _modelserver, start_curve , stop_curve 
 from utils import get_llm_provider_access_keys, load_env_file_to_dict
 
 logo = r"""
@@ -26,7 +26,7 @@ def main(ctx):
 
 # Command to build curve and server Docker images
 CURVEGW_DOCKERFILE = "./curve /Dockerfile"
-MODEL_SERVER_DOCKERFILE = "./server/Dockerfile"
+MODEL_SERVER_BUILD_FILE = "./server/pyproject.toml"
 
 @click.command()
 def build():
@@ -44,20 +44,21 @@ def build():
         click.echo("Error: Dockerfile not found in /curve ")
         sys.exit(1)
 
-    # Check if /server/Dockerfile exists
-    if os.path.exists(MODEL_SERVER_DOCKERFILE):
-        click.echo("Building server image...")
+    click.echo("All images built successfully.")
+
+    """Install the model server dependencies using Poetry."""
+    # Check if pyproject.toml exists
+    if os.path.exists(MODEL_SERVER_BUILD_FILE):
+        click.echo("Installing model server dependencies with Poetry...")
         try:
-            subprocess.run(["docker", "build", "-f", MODEL_SERVER_DOCKERFILE, "-t", "server:latest", "./server"], check=True)
-            click.echo("server image built successfully.")
+            subprocess.run(["poetry", "install", "--no-cache"], cwd=os.path.dirname(MODEL_SERVER_BUILD_FILE), check=True)
+            click.echo("Model server dependencies installed successfully.")
         except subprocess.CalledProcessError as e:
-            click.echo(f"Error building server image: {e}")
+            click.echo(f"Error installing model server dependencies: {e}")
             sys.exit(1)
     else:
-        click.echo("Error: Dockerfile not found in /server")
+        click.echo(f"Error: pyproject.toml not found in {MODEL_SERVER_BUILD_FILE}")
         sys.exit(1)
-
-    click.echo("All images built successfully.")
 
 @click.command()
 @click.argument('file', required=False)  # Optional file argument
@@ -120,11 +121,14 @@ def up(file, path):
     env = os.environ.copy()
     env.update(env_stage)
     env['CURVE_CONFIG_FILE'] = curve_config_file
+
+    start_curve _modelserver()
     start_curve (curve_config_file, env)
 
 @click.command()
 def down():
     """Stops Curve."""
+    stop_curve _modelserver()
     stop_curve ()
 
 @click.command()
