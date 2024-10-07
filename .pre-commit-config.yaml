@@ -3,7 +3,7 @@ repos:
     rev: v4.6.0
     hooks:
       - id: check-yaml
-        exclude: curve /envoy.template.yaml
+        exclude: curve /envoy.template*
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: local
