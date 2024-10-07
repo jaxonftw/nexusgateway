@@ -11,6 +11,7 @@ OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 CHAT_COMPLETION_ENDPOINT = os.getenv("CHAT_COMPLETION_ENDPOINT")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-3.5-turbo")
+CURVE_STATE_HEADER = 'x-curve -state'
 
 log.info("CHAT_COMPLETION_ENDPOINT: ", CHAT_COMPLETION_ENDPOINT)
 
@@ -32,7 +33,7 @@ def predict(message, state):
 
     metadata = None
     if 'curve _state' in state:
-       metadata = {"x-curve -state": state['curve _state']}
+       metadata = {CURVE_STATE_HEADER: state['curve _state']}
 
     try:
       raw_response = client.chat.completions.with_raw_response.create(model=MODEL_NAME,
@@ -48,11 +49,12 @@ def predict(message, state):
       log.info("Error calling gateway API: {}".format(e.message))
       raise gr.Error("Error calling gateway API: {}".format(e.message))
 
+    log.debug("raw_response: ", raw_response.text)
     response = raw_response.parse()
 
     # extract curve _state from metadata and store it in gradio session state
     # this state must be passed back to the gateway in the next request
-    curve _state = json.loads(raw_response.text).get('metadata', {}).get('x-curve -state', None)
+    curve _state = json.loads(raw_response.text).get('metadata', {}).get(CURVE_STATE_HEADER, None)
     if curve _state:
         state['curve _state'] = curve _state
 
