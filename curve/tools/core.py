@@ -105,6 +105,7 @@ def start_curve _modelserver():
         subprocess.run(
             ['curve_modelserver', 'restart'],
             check=True,
+            start_new_session=True
         )
         print("Successfull run the curve server")
     except subprocess.CalledProcessError as e:

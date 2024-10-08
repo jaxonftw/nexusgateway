@@ -90,6 +90,7 @@ def up(file, path):
 
     # Set the CURVE_CONFIG_FILE environment variable
     env_stage = {}
+    env = os.environ.copy()
     #check if access_keys are preesnt in the config file
     access_keys = get_llm_provider_access_keys(curve_config_file=curve_config_file)
     if access_keys:
@@ -118,7 +119,6 @@ def up(file, path):
         for key, value in env_stage.items():
             file.write(f"{key}={value}\n")
 
-    env = os.environ.copy()
     env.update(env_stage)
     env['CURVE_CONFIG_FILE'] = curve_config_file
 
