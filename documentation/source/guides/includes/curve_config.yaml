@@ -37,7 +37,7 @@ prompt_targets:
     system_prompt: You are a helpful information extraction assistant. Use the information that is provided to you.
 
   - name: reboot_network_device
-    description: Reboot a specific network device
+    description: Perform device operations like rebooting a device.
     endpoint:
       name: app_server
       path: /agent/action

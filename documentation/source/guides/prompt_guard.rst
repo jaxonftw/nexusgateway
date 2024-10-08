@@ -47,6 +47,16 @@ It excels at detecting explicitly malicious prompts and assessing toxic content,
 By embedding Curve-Guard within the Curve curve itecture, we empower developers to build robust, LLM-powered applications while prioritizing security and safety. With Curve-Guard, you can navigate the complexities of prompt management with confidence, knowing you have a reliable defense against malicious input.
 
 
+Example Configuration
+~~~~~~~~~~~~~~~~~~~~~
+Here is an example of using Curve-Guard in Curve:
+
+.. literalinclude:: includes/curve_config.yaml
+    :language: yaml
+    :linenos:
+    :lines: 22-26
+    :caption: Curve-Guard Example Configuration
+
 How Curve-Guard Works
 ----------------------
 

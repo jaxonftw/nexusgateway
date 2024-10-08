@@ -1,17 +1,17 @@
 .. _curve _overview_prompt_handling:
 
-Prompt
-=================
+Prompts
+=======
 
 Curve's primary design point is to securely accept, process and handle prompts. To do that effectively,
 Curve relies on Envoy's HTTP `connection management <https://www.envoyproxy.io/docs/envoy/v1.31.2/intro/curve _overview/http/http_connection_management>`_,
 subsystem and its **prompt handler** subsystem engineered with purpose-built LLMs to
 implement critical functionality on behalf of developers so that you can stay focused on business logic.
 
-.. Note::
-   Curve's **prompt handler** subsystem interacts with the **model** subsytem through Envoy's cluster manager
-   system to ensure robust, resilient and fault-tolerant experience in managing incoming prompts. Read more
-   about the :ref:`model subsystem <curve _model_serving>` and how the LLMs are hosted in Curve.
+Curve's **prompt handler** subsystem interacts with the **model subsytem** through Envoy's cluster manager system to ensure robust, resilient and fault-tolerant experience in managing incoming prompts.
+
+.. seealso::
+   Read more about the :ref:`model subsystem <model_serving>` and how the LLMs are hosted in Curve.
 
 Messages
 --------
@@ -24,7 +24,7 @@ containing two key-value pairs:
     - **Content**: Contains the actual text of the message.
 
 
-Prompt Guardrails
+Prompt Guard
 -----------------
 
 Curve is engineered with :ref:`Curve-Guard <prompt_guard>`, an industry leading safety layer, powered by a
@@ -36,12 +36,12 @@ To add jailbreak guardrails, see example below:
 .. literalinclude:: ../includes/curve_config.yaml
     :language: yaml
     :linenos:
-    :lines: 1-45
-    :emphasize-lines: 22-26
+    :lines: 1-25
+    :emphasize-lines: 21-25
     :caption: Example Configuration
 
 .. Note::
-   As a roadmap item, Curve will expose the ability for developers to define custom guardrails via Curve-Guard-v2,
+   As a roadmap item, Curve will expose the ability for developers to define custom guardrails via Curve-Guard,
    and add support for additional safety checks defined by developers and hazardous categories like, violent crimes, privacy, hate,
    etc. To offer feedback on our roadmap, please visit our `github page <https://github.com/orgs/curvelaboratory/projects/1>`_
 
@@ -59,9 +59,13 @@ Configuring ``prompt_targets`` is simple. See example below:
 .. literalinclude:: ../includes/curve_config.yaml
     :language: yaml
     :linenos:
-    :emphasize-lines: 29-38
+    :emphasize-lines: 39-53
     :caption: Example Configuration
 
+
+.. seealso::
+
+   Check :ref:`Prompt Target <prompt_target>` for more details!
 
 Intent Detection and Prompt Matching:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -127,10 +131,6 @@ Example: Using OpenAI Client with Curve as an Egress Gateway
 
    print("OpenAI Response:", response.choices[0].text.strip())
 
-In these examples:
-
-    The OpenAI client is used to send traffic directly through the Curve egress proxy to the LLM of your choice, such as OpenAI.
-    The OpenAI client is configured to route traffic via Curve by setting the proxy to 127.0.0.1:51001, assuming Curve is
-    running locally and bound to that address and port.
-
+In these examples, the OpenAI client is used to send traffic directly through the Curve egress proxy to the LLM of your choice, such as OpenAI.
+The OpenAI client is configured to route traffic via Curve by setting the proxy to ``127.0.0.1:51001``, assuming Curve is running locally and bound to that address and port.
 This setup allows you to take advantage of Curve's advanced traffic management features while interacting with LLM APIs like OpenAI.

@@ -13,7 +13,7 @@ thread. All the functionality around prompt handling from a downstream client is
 This allows the majority of Curve to be largely single threaded (embarrassingly parallel) with a small amount
 of more complex code handling coordination between the worker threads.
 
-Generally Curve is written to be 100% non-blocking.
+Generally, Curve is written to be 100% non-blocking.
 
 .. tip::
 

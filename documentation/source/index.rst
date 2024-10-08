@@ -64,4 +64,3 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
       :titlesonly:
 
       resources/configuration_reference
-      resources/error_target

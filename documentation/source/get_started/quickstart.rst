@@ -77,7 +77,7 @@ Next Steps
 
 Congratulations! You've successfully set up Curve and made your first prompt-based request. To further enhance your GenAI applications, explore the following resources:
 
-- Full Documentation: Comprehensive guides and references.
+- :ref:`Full Documentation <overview>`: Comprehensive guides and references.
 - `GitHub Repository <https://github.com/curvelaboratory/Curve>`_: Access the source code, contribute, and track updates.
 - `Support <https://github.com/curvelaboratory/Curve#contact>`_: Get help and connect with the Curve community .
 
