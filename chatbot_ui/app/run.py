@@ -49,12 +49,17 @@ def predict(message, state):
       log.info("Error calling gateway API: {}".format(e.message))
       raise gr.Error("Error calling gateway API: {}".format(e.message))
 
-    log.debug("raw_response: ", raw_response.text)
+    log.info("raw_response: ", raw_response.text)
     response = raw_response.parse()
 
     # extract curve _state from metadata and store it in gradio session state
     # this state must be passed back to the gateway in the next request
-    curve _state = json.loads(raw_response.text).get('metadata', {}).get(CURVE_STATE_HEADER, None)
+    response_json = json.loads(raw_response.text)
+    curve _state = None
+    if response_json:
+      metadata = response_json.get('metadata', {})
+      if metadata:
+        curve _state = metadata.get(CURVE_STATE_HEADER, None)
     if curve _state:
         state['curve _state'] = curve _state
 
