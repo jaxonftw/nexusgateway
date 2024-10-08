@@ -56,6 +56,8 @@ fn request_headers_expectations(module: &mut Tester, http_context: i32) {
         .expect_get_header_map_value(Some(MapType::HttpRequestHeaders), Some(":path"))
         .returning(Some("/v1/chat/completions"))
         .expect_log(Some(LogLevel::Debug), None)
+        .expect_get_header_map_value(Some(MapType::HttpRequestHeaders), Some("x-request-id"))
+        .returning(None)
         .execute_and_expect(ReturnType::Action(Action::Continue))
         .unwrap();
 }
@@ -95,8 +97,9 @@ fn normal_flow(module: &mut Tester, filter_context: i32, http_context: i32) {
         .returning(Some(chat_completions_request_body))
         // The actual call is not important in this test, we just need to grab the token_id
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/guard"),
                 (":authority", "server"),
@@ -135,8 +138,9 @@ fn normal_flow(module: &mut Tester, filter_context: i32, http_context: i32) {
         .expect_log(Some(LogLevel::Debug), None)
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/embeddings"),
                 (":authority", "server"),
@@ -179,8 +183,9 @@ fn normal_flow(module: &mut Tester, filter_context: i32, http_context: i32) {
         .expect_log(Some(LogLevel::Debug), None)
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/zeroshot"),
                 (":authority", "server"),
@@ -220,9 +225,10 @@ fn normal_flow(module: &mut Tester, filter_context: i32, http_context: i32) {
         .expect_log(Some(LogLevel::Debug), None)
         .expect_log(Some(LogLevel::Info), None)
         .expect_http_call(
-            Some("curve _fc"),
+            Some("curve _internal"),
             Some(vec![
                 (":method", "POST"),
+                ("x-curve -upstream", "curve _fc"),
                 (":path", "/v1/chat/completions"),
                 (":authority", "curve _fc"),
                 ("content-type", "application/json"),
@@ -262,8 +268,9 @@ fn setup_filter(module: &mut Tester, config: &str) -> i32 {
         .call_proxy_on_tick(filter_context)
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/embeddings"),
                 (":authority", "server"),
@@ -441,7 +448,7 @@ fn successful_request_to_open_ai_chat_completions() {
         .expect_get_buffer_bytes(Some(BufferType::HttpRequestBody))
         .returning(Some(chat_completions_request_body))
         .expect_log(Some(LogLevel::Debug), None)
-        .expect_http_call(Some("server"), None, None, None, None)
+        .expect_http_call(Some("curve _internal"), None, None, None, None)
         .returning(Some(4))
         .expect_metric_increment("active_http_calls", 1)
         .execute_and_expect(ReturnType::Action(Action::Pause))
@@ -573,8 +580,9 @@ fn request_ratelimited() {
         .expect_log(Some(LogLevel::Debug), None)
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/hallucination"),
                 (":authority", "server"),
@@ -605,8 +613,9 @@ fn request_ratelimited() {
         .returning(Some(&body_text))
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("api_server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "api_server"),
                 (":method", "POST"),
                 (":path", "/weather"),
                 (":authority", "api_server"),
@@ -713,8 +722,9 @@ fn request_not_ratelimited() {
         .expect_log(Some(LogLevel::Debug), None)
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "server"),
                 (":method", "POST"),
                 (":path", "/hallucination"),
                 (":authority", "server"),
@@ -750,8 +760,9 @@ fn request_not_ratelimited() {
         .returning(Some(&body_text))
         .expect_log(Some(LogLevel::Debug), None)
         .expect_http_call(
-            Some("api_server"),
+            Some("curve _internal"),
             Some(vec![
+                ("x-curve -upstream", "api_server"),
                 (":method", "POST"),
                 (":path", "/weather"),
                 (":authority", "api_server"),

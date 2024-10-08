@@ -15,3 +15,6 @@ pub const CURVE_PROVIDER_HINT_HEADER: &str = "x-curve -llm-provider-hint";
 pub const CHAT_COMPLETIONS_PATH: &str = "v1/chat/completions";
 pub const CURVE_STATE_HEADER: &str = "x-curve -state";
 pub const CURVE_FC_MODEL_NAME: &str = "Curve-Function-1.5B";
+pub const REQUEST_ID_HEADER: &str = "x-request-id";
+pub const CURVE_INTERNAL_CLUSTER_NAME: &str = "curve _internal";
+pub const CURVE_UPSTREAM_HOST_HEADER: &str = "x-curve -upstream";
