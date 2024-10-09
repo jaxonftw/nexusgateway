@@ -38,66 +38,89 @@ MODEL_SERVER_BUILD_FILE = "./server/pyproject.toml"
 
 
 @click.command()
-def build():
+@click.option(
+    "--services",
+    default="all",
+    help="Services to build. Options are all, server, curve. Default is all",
+)
+def build(services):
     """Build Curve from source. Must be in root of cloned repo."""
-    # Check if /curve /Dockerfile exists
-    if os.path.exists(CURVEGW_DOCKERFILE):
-        click.echo("Building curve image...")
-        try:
-            subprocess.run(
-                [
-                    "docker",
-                    "build",
-                    "-f",
-                    CURVEGW_DOCKERFILE,
-                    "-t",
-                    "curve:latest",
-                    ".",
-                ],
-                check=True,
-            )
-            click.echo("curve image built successfully.")
-        except subprocess.CalledProcessError as e:
-            click.echo(f"Error building curve image: {e}")
-            sys.exit(1)
-    else:
-        click.echo("Error: Dockerfile not found in /curve ")
+    if services not in ["all", "server", "curve"]:
+        print(f"Error: Invalid service {services}. Exiting")
         sys.exit(1)
+    # Check if /curve /Dockerfile exists
+    if services == "curve" or services == "all":
+        if os.path.exists(CURVEGW_DOCKERFILE):
+            click.echo("Building curve image...")
+            try:
+                subprocess.run(
+                    [
+                        "docker",
+                        "build",
+                        "-f",
+                        CURVEGW_DOCKERFILE,
+                        "-t",
+                        "curve:latest",
+                        ".",
+                    ],
+                    check=True,
+                )
+                click.echo("curve image built successfully.")
+            except subprocess.CalledProcessError as e:
+                click.echo(f"Error building curve image: {e}")
+                sys.exit(1)
+        else:
+            click.echo("Error: Dockerfile not found in /curve ")
+            sys.exit(1)
 
-    click.echo("All images built successfully.")
+    click.echo("curve image built successfully.")
 
     """Install the model server dependencies using Poetry."""
-    # Check if pyproject.toml exists
-    if os.path.exists(MODEL_SERVER_BUILD_FILE):
-        click.echo("Installing model server dependencies with Poetry...")
-        try:
-            subprocess.run(
-                ["poetry", "install", "--no-cache"],
-                cwd=os.path.dirname(MODEL_SERVER_BUILD_FILE),
-                check=True,
-            )
-            click.echo("Model server dependencies installed successfully.")
-        except subprocess.CalledProcessError as e:
-            click.echo(f"Error installing model server dependencies: {e}")
+    if services == "server" or services == "all":
+        # Check if pyproject.toml exists
+        if os.path.exists(MODEL_SERVER_BUILD_FILE):
+            click.echo("Installing model server dependencies with Poetry...")
+            try:
+                subprocess.run(
+                    ["poetry", "install", "--no-cache"],
+                    cwd=os.path.dirname(MODEL_SERVER_BUILD_FILE),
+                    check=True,
+                )
+                click.echo("Model server dependencies installed successfully.")
+            except subprocess.CalledProcessError as e:
+                click.echo(f"Error installing model server dependencies: {e}")
+                sys.exit(1)
+        else:
+            click.echo(f"Error: pyproject.toml not found in {MODEL_SERVER_BUILD_FILE}")
             sys.exit(1)
-    else:
-        click.echo(f"Error: pyproject.toml not found in {MODEL_SERVER_BUILD_FILE}")
-        sys.exit(1)
 
 
 @click.command()
 @click.argument("file", required=False)  # Optional file argument
 @click.option(
-    "--path", default=".", help="Path to the directory containing curve_config.yml"
+    "--path", default=".", help="Path to the directory containing curve_config.yaml"
 )
-def up(file, path):
+@click.option(
+    "--services",
+    default="all",
+    help="Services to start. Options are all, server, curve. Default is all",
+)
+def up(file, path, services):
     """Starts Curve."""
+    if services not in ["all", "server", "curve"]:
+        print(f"Error: Invalid service {services}. Exiting")
+        sys.exit(1)
+
+    if services == "server":
+        start_curve _modelserver()
+        return
+
     if file:
         # If a file is provided, process that file
         curve_config_file = os.path.abspath(file)
     else:
-        # If no file is provided, use the path and look for curve_config.yml
-        curve_config_file = os.path.abspath(os.path.join(path, "curve_config.yml"))
+        # If no file is provided, use the path and look for curve_config.yaml
+        curve_config_file = os.path.abspath(os.path.join(path, "curve_config.yaml"))
 
     # Check if the file exists
     if not os.path.exists(curve_config_file):
@@ -160,15 +183,32 @@ def up(file, path):
     env.update(env_stage)
     env["CURVE_CONFIG_FILE"] = curve_config_file
 
-    start_curve _modelserver()
-    start_curve (curve_config_file, env)
+    if services == "curve":
+        start_curve (curve_config_file, env)
+    else:
+        start_curve _modelserver()
+        start_curve (curve_config_file, env)
 
 
 @click.command()
-def down():
+@click.option(
+    "--services",
+    default="all",
+    help="Services to down. Options are all, server, curve. Default is all",
+)
+def down(services):
     """Stops Curve."""
-    stop_curve _modelserver()
-    stop_curve ()
+
+    if services not in ["all", "server", "curve"]:
+        print(f"Error: Invalid service {services}. Exiting")
+        sys.exit(1)
+    if services == "server":
+        stop_curve _modelserver()
+    elif services == "curve":
+        stop_curve ()
+    else:
+        stop_curve _modelserver()
+        stop_curve ()
 
 
 @click.command()

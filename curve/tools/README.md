@@ -48,7 +48,7 @@ source venv/bin/activate
 
 ### Step 3: Run the build script
 ```bash
-sh build-cli.sh
+sh build_cli.sh
 ```
 
 ### Step 4: build Curve
@@ -56,6 +56,10 @@ sh build-cli.sh
 curve build
 ```
 
+## Step 5: start model server in the background
+```
+curve up --services server
+```
 
 ## Uninstall Instructions: curve CLI
 ```bash

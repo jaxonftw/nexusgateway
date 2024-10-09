@@ -70,6 +70,7 @@ Step 3: Start Curve Gateway
 
     $ curve up [path_to_config]
 
+For detailed usage please refer to the `Support <https://github.com/curvelaboratory/Curve/blob/main/curve /tools/README.md#setup-instructionsuser-curve-cli>`
 
 
 Next Steps
