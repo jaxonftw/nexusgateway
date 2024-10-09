@@ -9,6 +9,10 @@
       "path": "curve "
     },
     {
+      "name": "curve /tools",
+      "path": "curve /tools"
+    },
+    {
       "name": "server",
       "path": "server"
     },

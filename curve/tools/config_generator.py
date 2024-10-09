@@ -76,9 +76,12 @@ def validate_and_render_schema():
     curve _llm_providers = config_yaml["llm_providers"]
     curve _tracing = config_yaml.get("tracing", {})
     curve_config_string = yaml.dump(config_yaml)
+    config_yaml["mode"] = "llm"
+    curve _llm_config_string = yaml.dump(config_yaml)
 
     data = {
         "curve_config": curve_config_string,
+        "curve _llm_config": curve _llm_config_string,
         "curve _clusters": inferred_clusters,
         "curve _llm_providers": curve _llm_providers,
         "curve _tracing": curve _tracing,
