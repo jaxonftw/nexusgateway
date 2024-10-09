@@ -1,3 +1,3 @@
 jailbreak:
   cpu: "curvelaboratory/Curve-Guard-cpu"
-  gpu: "curvelaboratory/Curve-Guard-gpu"
+  gpu: "curvelaboratory/Curve-Guard"
