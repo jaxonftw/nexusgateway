@@ -19,7 +19,7 @@ COPY --from=envoy /usr/local/bin/envoy /usr/local/bin/envoy
 WORKDIR /config
 COPY curve /requirements.txt .
 RUN pip install -r requirements.txt
-COPY curve /tools/config_generator.py .
+COPY curve /tools/cli/config_generator.py .
 COPY curve /envoy.template.yaml .
 COPY curve /curve_config_schema.yaml .
 

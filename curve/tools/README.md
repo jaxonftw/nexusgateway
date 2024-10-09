@@ -1,6 +1,35 @@
-## Setup Instructions: curve CLI
+## Setup Instructions(User): curve CLI
 
 This guide will walk you through the steps to set up the curve cli on your local machine
+
+### Step 1: Create a Python virtual environment
+
+In the tools directory, create a Python virtual environment by running:
+
+```bash
+python -m venv venv
+```
+
+### Step 2: Activate the virtual environment
+* On Linux/MacOS:
+
+```bash
+source venv/bin/activate
+```
+
+### Step 3: Run the build script
+```bash
+pip install curve
+```
+
+## Uninstall Instructions: curve CLI
+```bash
+pip uninstall curve
+```
+
+## Setup Instructions (Dev): curve CLI
+
+This guide will walk you through the steps to set up the curve cli on your local machine when you want to develop the Curvegw CLI
 
 ### Step 1: Create a Python virtual environment
 
@@ -22,7 +51,12 @@ source venv/bin/activate
 sh build-cli.sh
 ```
 
+### Step 4: build Curve
+```bash
+curve build
+```
+
+
 ## Uninstall Instructions: curve CLI
 ```bash
 pip uninstall curve
-```

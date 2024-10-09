@@ -1,12 +1,17 @@
 import click
-import targets
 import os
-import config_generator
 import pkg_resources
 import sys
 import subprocess
-from core import start_curve _modelserver, stop_curve _modelserver, start_curve , stop_curve 
-from utils import get_llm_provider_access_keys, load_env_file_to_dict
+from cli import targets
+from cli import config_generator
+from cli.core import (
+    start_curve _modelserver,
+    stop_curve _modelserver,
+    start_curve ,
+    stop_curve ,
+)
+from cli.utils import get_llm_provider_access_keys, load_env_file_to_dict
 
 logo = r"""
      _                _
@@ -83,7 +88,7 @@ def build():
 @click.command()
 @click.argument("file", required=False)  # Optional file argument
 @click.option(
-    "-path", default=".", help="Path to the directory containing curve_config.yml"
+    "--path", default=".", help="Path to the directory containing curve_config.yml"
 )
 def up(file, path):
     """Starts Curve."""
@@ -101,7 +106,7 @@ def up(file, path):
 
     print(f"Validating {curve_config_file}")
     curve _schema_config = pkg_resources.resource_filename(
-        __name__, "config/curve_config_schema.yaml"
+        __name__, "../config/curve_config_schema.yaml"
     )
 
     try:
@@ -110,7 +115,7 @@ def up(file, path):
             curve_config_schema_file=curve _schema_config,
         )
     except Exception as e:
-        print("Exiting curve up")
+        print(f"Exiting curve up: {e}")
         sys.exit(1)
 
     print("Starting Curve gateway and Curve model server services via docker ")
@@ -147,7 +152,7 @@ def up(file, path):
                     env_stage[access_key] = env_file_dict[access_key]
 
     with open(
-        pkg_resources.resource_filename(__name__, "config/stage.env"), "w"
+        pkg_resources.resource_filename(__name__, "../config/stage.env"), "w"
     ) as file:
         for key, value in env_stage.items():
             file.write(f"{key}={value}\n")
@@ -168,7 +173,7 @@ def down():
 
 @click.command()
 @click.option(
-    "-f",
+    "--f",
     "--file",
     type=click.Path(exists=True),
     required=True,
