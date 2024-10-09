@@ -7,5 +7,6 @@ services:
     volumes:
       - ${CURVE_CONFIG_FILE:-./demos/function_calling/curve _confg.yaml}:/config/curve_config.yaml
       - /etc/ssl/cert.pem:/etc/ssl/cert.pem
+      - ~/curve_logs/curve _logs:/var/log/
     env_file:
       - stage.env
