@@ -62,6 +62,7 @@ def build(services):
                         "-t",
                         "curve:latest",
                         ".",
+                        "--add-host=host.docker.internal:host-gateway",
                     ],
                     check=True,
                 )
