@@ -30,7 +30,7 @@ def get_embedding_model(
 
 
 def get_zero_shot_model(
-    model_name=os.getenv("ZERO_SHOT_MODELS", "curvelaboratory/deberta-base-nli"),
+    model_name=os.getenv("ZERO_SHOT_MODELS", "curvelaboratory/bart-large-mnli"),
 ):
     print("Loading Zero-shot Model...")
 
