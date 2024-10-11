@@ -80,7 +80,7 @@ Here is a full list of parameter attributes that Curve can support:
 Example Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: python
+.. code-block:: yaml
 
     prompt_targets:
       - name: get_weather

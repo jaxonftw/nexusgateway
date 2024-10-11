@@ -23,6 +23,7 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
     .. toctree::
       :caption: Get Started
       :titlesonly:
+      :maxdepth: 2
 
       get_started/overview
       get_started/intro_to_curve 
@@ -33,6 +34,7 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
     .. toctree::
       :caption: Concepts
       :titlesonly:
+      :maxdepth: 2
 
       concepts/tech_overview/tech_overview
       concepts/llm_provider
@@ -43,6 +45,7 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
     .. toctree::
       :caption: Guides
       :titlesonly:
+      :maxdepth: 2
 
       guides/prompt_guard
       guides/function_calling
@@ -53,6 +56,7 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
     .. toctree::
       :caption: Build with Curve
       :titlesonly:
+      :maxdepth: 2
 
       build_with_curve /agent
       build_with_curve /rag
@@ -62,5 +66,6 @@ Curve (built by the contributors of `Envoy <https://www.envoyproxy.io/>`_ ) was 
     .. toctree::
       :caption: Resources
       :titlesonly:
+      :maxdepth: 2
 
       resources/configuration_reference
