@@ -30,3 +30,4 @@ server/venv_server
 server/build
 server/dist
 curve _logs/
+dist/
