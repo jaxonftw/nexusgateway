@@ -56,9 +56,18 @@ sh build_cli.sh
 curve build
 ```
 
-## Step 5: start model server in the background
+### Step 5: download models
+This will help download models so server can load faster. This should be done once.
+
+```bash
+curve download-models
 ```
-curve up --services server
+
+### Logs
+`curve` command can also view logs from gateway and server. Use following command to view logs,
+
+```bash
+curve logs --follow
 ```
 
 ## Uninstall Instructions: curve CLI

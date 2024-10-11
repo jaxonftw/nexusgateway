@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "curve"
-version = "0.0.1"
+version = "0.0.3"
 description = "Python-based CLI tool to manage Curve Gateway."
 authors = ["Katanemo Labs, Inc."]
 packages = [
@@ -22,7 +22,8 @@ click = "^8.1.7"
 jinja2 = "^3.1.4"
 jsonschema = "^4.23.0"
 setuptools = "75.1.0"
-curve_modelserver= "0.0.2"
+curve_modelserver= "0.0.3"
+huggingface_hub = "^0.25.2"
 
 [tool.poetry.scripts]
 curve = "cli.main:main"

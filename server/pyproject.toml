@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "curve_modelserver"
-version = "0.0.2"
+version = "0.0.3"
 description = "A model server for serving models"
 authors = ["Katanemo Labs, Inc <curve@curvelaboratory.com>"]
 license = "Apache 2.0"
@@ -31,7 +31,7 @@ onnx = "1.17.0"
 onnxruntime = "1.19.2"
 
 [tool.poetry.scripts]
-curve_modelserver = "app:run_server"
+curve_modelserver = "app.cli:run_server"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

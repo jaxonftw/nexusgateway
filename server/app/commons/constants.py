@@ -5,6 +5,7 @@ import app.loader as loader
 from app.function_calling.model_handler import CurveFunctionHandler
 from app.prompt_guard.model_handler import CurveGuardHanlder
 
+logger = utils.get_server_logger()
 
 curve _function_hanlder = CurveFunctionHandler()
 curve _function_endpoint = "https://api.fc.curve.com/v1"
@@ -18,7 +19,6 @@ curve _function_generation_params = {
 }
 
 curve _guard_model_type = {"cpu": "curvelaboratory/Curve-Guard-cpu", "gpu": "curvelaboratory/Curve-Guard"}
-
 
 # Model definition
 embedding_model = loader.get_embedding_model()
