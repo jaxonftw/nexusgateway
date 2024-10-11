@@ -5,7 +5,7 @@ This demo shows how you can use Curve's core function calling capabilites.
 1. Please make sure the [pre-requisites](https://github.com/curvelaboratory/Curve/?tab=readme-ov-file#prerequisites) are installed correctly
 2. Start Curve
 
-3. 
+3.
    ```sh
    sh run_demo.sh
    ```
