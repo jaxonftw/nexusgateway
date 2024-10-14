@@ -2,7 +2,7 @@ Welcome to Curve!
 ================
 
 .. image:: /_static/img/curve -logo.png
-   :width: 80%
+   :width: 100%
    :align: center
 
 .. raw:: html
