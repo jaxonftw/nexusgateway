@@ -1,7 +1,7 @@
 pub const DEFAULT_EMBEDDING_MODEL: &str = "curvelaboratory/bge-large-en-v1.5";
 pub const DEFAULT_INTENT_MODEL: &str = "curvelaboratory/bart-large-mnli";
 pub const DEFAULT_PROMPT_TARGET_THRESHOLD: f64 = 0.8;
-pub const DEFAULT_HALLUCINATED_THRESHOLD: f64 = 0.1;
+pub const DEFAULT_HALLUCINATED_THRESHOLD: f64 = 0.25;
 pub const RATELIMIT_SELECTOR_HEADER_KEY: &str = "x-curve -ratelimit-selector";
 pub const SYSTEM_ROLE: &str = "system";
 pub const USER_ROLE: &str = "user";
@@ -19,3 +19,4 @@ pub const REQUEST_ID_HEADER: &str = "x-request-id";
 pub const CURVE_INTERNAL_CLUSTER_NAME: &str = "curve _internal";
 pub const CURVE_UPSTREAM_HOST_HEADER: &str = "x-curve -upstream";
 pub const CURVE_LLM_UPSTREAM_LISTENER: &str = "curve _llm_listener";
+pub const CURVE_MODEL_PREFIX: &str = "Curve";

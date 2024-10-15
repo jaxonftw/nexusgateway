@@ -1,9 +1,9 @@
 use crate::consts::{
     CURVE_FC_MODEL_NAME, CURVE_FC_REQUEST_TIMEOUT_MS, CURVE_INTERNAL_CLUSTER_NAME,
-    CURVE_LLM_UPSTREAM_LISTENER, CURVE_MESSAGES_KEY, CURVE_PROVIDER_HINT_HEADER, CURVE_ROUTING_HEADER,
-    CURVE_STATE_HEADER, CURVE_UPSTREAM_HOST_HEADER, ARC_FC_CLUSTER, CHAT_COMPLETIONS_PATH,
-    DEFAULT_EMBEDDING_MODEL, DEFAULT_HALLUCINATED_THRESHOLD, DEFAULT_INTENT_MODEL,
-    DEFAULT_PROMPT_TARGET_THRESHOLD, GPT_35_TURBO, MODEL_SERVER_NAME,
+    CURVE_LLM_UPSTREAM_LISTENER, CURVE_MESSAGES_KEY, CURVE_MODEL_PREFIX, CURVE_PROVIDER_HINT_HEADER,
+    CURVE_ROUTING_HEADER, CURVE_STATE_HEADER, CURVE_UPSTREAM_HOST_HEADER, ARC_FC_CLUSTER,
+    CHAT_COMPLETIONS_PATH, DEFAULT_EMBEDDING_MODEL, DEFAULT_HALLUCINATED_THRESHOLD,
+    DEFAULT_INTENT_MODEL, DEFAULT_PROMPT_TARGET_THRESHOLD, GPT_35_TURBO, MODEL_SERVER_NAME,
     RATELIMIT_SELECTOR_HEADER_KEY, REQUEST_ID_HEADER, SYSTEM_ROLE, USER_ROLE,
 };
 use crate::filter_context::{EmbeddingsStore, WasmMetrics};
@@ -453,7 +453,7 @@ impl StreamContext {
         if messages.len() >= 2 {
             let latest_assistant_message = &messages[messages.len() - 2];
             if let Some(model) = latest_assistant_message.model.as_ref() {
-                if model.contains("Curve") {
+                if model.contains(CURVE_MODEL_PREFIX) {
                     curve _assistant = true;
                 }
             }
@@ -728,8 +728,41 @@ impl StreamContext {
                 None => HashMap::new(), // Return an empty HashMap if v is not an object
             };
 
+            let messages = &callout_context.request_body.messages;
+            let mut curve _assistant = false;
+            let mut user_messages = Vec::new();
+
+            if messages.len() >= 2 {
+                let latest_assistant_message = &messages[messages.len() - 2];
+                if let Some(model) = latest_assistant_message.model.as_ref() {
+                    if model.starts_with(CURVE_MODEL_PREFIX) {
+                        curve _assistant = true;
+                    }
+                }
+            }
+            if curve _assistant {
+                for message in messages.iter() {
+                    if let Some(model) = message.model.as_ref() {
+                        if !model.starts_with(CURVE_MODEL_PREFIX) {
+                            break;
+                        }
+                    }
+                    if message.role == "user" {
+                        if let Some(content) = &message.content {
+                            user_messages.push(content.clone());
+                        }
+                    }
+                }
+            } else {
+                if let Some(user_message) = callout_context.user_message.as_ref() {
+                    user_messages.push(user_message.clone());
+                }
+            }
+            let user_messages_str = user_messages.join(", ");
+            debug!("user messages: {}", user_messages_str);
+
             let hallucination_classification_request = HallucinationClassificationRequest {
-                prompt: callout_context.user_message.as_ref().unwrap().clone(),
+                prompt: user_messages_str,
                 model: String::from(DEFAULT_INTENT_MODEL),
                 parameters: tool_params_dict,
             };
