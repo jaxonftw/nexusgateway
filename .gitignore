@@ -1,6 +1,4 @@
-curve /target
 curve /qdrant_data/
-public_types/target
 /venv/
 __pycache__
 grafana-data
@@ -31,3 +29,4 @@ server/build
 server/dist
 curve _logs/
 dist/
+crates/*/target/

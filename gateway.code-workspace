@@ -5,8 +5,16 @@
 			"path": "."
 		},
     {
-      "name": "curve ",
-      "path": "curve "
+      "name": "common",
+      "path": "crates/common"
+    },
+    {
+      "name": "prompt_gateway",
+      "path": "crates/prompt_gateway"
+    },
+    {
+      "name": "llm_gateway",
+      "path": "crates/prompt_gateway"
     },
     {
       "name": "curve /tools",
