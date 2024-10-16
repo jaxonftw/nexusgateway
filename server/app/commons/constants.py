@@ -18,14 +18,16 @@ curve _function_generation_params = {
     "stop_token_ids": [151645],
 }
 
-curve _guard_model_type = {"cpu": "curvelaboratory/Curve-Guard-cpu", "gpu": "curvelaboratory/Curve-Guard"}
+curve _guard_model_type = {
+    "cpu": "curvelaboratory/Curve-Guard-cpu",
+    "cuda": "curvelaboratory/Curve-Guard",
+    "mps": "curvelaboratory/Curve-Guard",
+}
 
 # Model definition
 embedding_model = loader.get_embedding_model()
 zero_shot_model = loader.get_zero_shot_model()
 
-prompt_guard_dict = loader.get_prompt_guard(
-    curve _guard_model_type[glb.HARDWARE], glb.HARDWARE
-)
+prompt_guard_dict = loader.get_prompt_guard(curve _guard_model_type[glb.DEVICE])
 
 curve _guard_handler = CurveGuardHanlder(model_dict=prompt_guard_dict)
