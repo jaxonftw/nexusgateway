@@ -3,22 +3,28 @@ import os
 import pkg_resources
 import sys
 import subprocess
+import multiprocessing
+import importlib.metadata
 from cli import targets
 from cli import config_generator
+from cli.utils import getLogger, get_llm_provider_access_keys, load_env_file_to_dict
 from cli.core import (
     start_curve _modelserver,
     stop_curve _modelserver,
     start_curve ,
     stop_curve ,
     stream_gateway_logs,
+    stream_server_logs,
+    stream_access_logs,
+    download_models_from_hf,
 )
-from cli.utils import get_llm_provider_access_keys, load_env_file_to_dict
-from cli.consts import KATANEMO_DOCKERHUB_REPO
-from cli.utils import getLogger
-import multiprocessing
-from huggingface_hub import snapshot_download
-import joblib
-
+from cli.consts import (
+    KATANEMO_DOCKERHUB_REPO,
+    KATANEMO_LOCAL_MODEL_LIST,
+    SERVICE_NAME_CURVEGW,
+    SERVICE_NAME_MODEL_SERVER,
+    SERVICE_ALL,
+)
 
 log = getLogger(__name__)
 
@@ -31,34 +37,46 @@ logo = r"""
 
 """
 
+# Command to build curve and server Docker images
+CURVEGW_DOCKERFILE = "./curve /Dockerfile"
+MODEL_SERVER_BUILD_FILE = "./server/pyproject.toml"
+
+
+def get_version():
+    try:
+        version = importlib.metadata.version("curve")
+        return version
+    except importlib.metadata.PackageNotFoundError:
+        return "version not found"
+
 
 @click.group(invoke_without_command=True)
+@click.option("--version", is_flag=True, help="Show the curve cli version and exit.")
 @click.pass_context
-def main(ctx):
+def main(ctx, version):
+    if version:
+        click.echo(f"curve cli version: {get_version()}")
+        ctx.exit()
+
     if ctx.invoked_subcommand is None:
         click.echo("""Curve (The Intelligent Prompt Gateway) CLI""")
         click.echo(logo)
         click.echo(ctx.get_help())
 
 
-# Command to build curve and server Docker images
-CURVEGW_DOCKERFILE = "./curve /Dockerfile"
-MODEL_SERVER_BUILD_FILE = "./server/pyproject.toml"
-
-
 @click.command()
 @click.option(
     "--service",
-    default="all",
+    default=SERVICE_ALL,
     help="Optioanl parameter to specify which service to build. Options are server, curve",
 )
 def build(service):
     """Build Curve from source. Must be in root of cloned repo."""
-    if service not in ["server", "curve", "all"]:
+    if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
         print(f"Error: Invalid service {service}. Exiting")
         sys.exit(1)
     # Check if /curve /Dockerfile exists
-    if service == "curve" or service == "all":
+    if service == SERVICE_NAME_CURVEGW or service == SERVICE_ALL:
         if os.path.exists(CURVEGW_DOCKERFILE):
             click.echo("Building curve image...")
             try:
@@ -86,7 +104,7 @@ def build(service):
     click.echo("curve image built successfully.")
 
     """Install the model server dependencies using Poetry."""
-    if service == "server" or service == "all":
+    if service == SERVICE_NAME_MODEL_SERVER or service == SERVICE_ALL:
         # Check if pyproject.toml exists
         if os.path.exists(MODEL_SERVER_BUILD_FILE):
             click.echo("Installing model server dependencies with Poetry...")
@@ -112,16 +130,18 @@ def build(service):
 )
 @click.option(
     "--service",
-    default="all",
+    default=SERVICE_ALL,
     help="Service to start. Options are server, curve.",
 )
 def up(file, path, service):
     """Starts Curve."""
-    if service not in ["all", "server", "curve"]:
-        print(f"Error: Invalid service {service}. Exiting")
+    if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
+        log.info(f"Error: Invalid service {service}. Exiting")
         sys.exit(1)
 
-    if service == "server":
+    if service == SERVICE_NAME_MODEL_SERVER:
+        log.info("Download curve models from HuggingFace...")
+        download_models_from_hf()
         start_curve _modelserver()
         return
 
@@ -134,10 +154,10 @@ def up(file, path, service):
 
     # Check if the file exists
     if not os.path.exists(curve_config_file):
-        print(f"Error: {curve_config_file} does not exist.")
+        log.info(f"Error: {curve_config_file} does not exist.")
         return
 
-    print(f"Validating {curve_config_file}")
+    log.info(f"Validating {curve_config_file}")
     curve _schema_config = pkg_resources.resource_filename(
         __name__, "../config/curve_config_schema.yaml"
     )
@@ -148,7 +168,7 @@ def up(file, path, service):
             curve_config_schema_file=curve _schema_config,
         )
     except Exception as e:
-        print(f"Exiting curve up: {e}")
+        log.info(f"Exiting curve up: {e}")
         sys.exit(1)
 
     log.info("Starging curve  model server and curve  gateway")
@@ -171,7 +191,7 @@ def up(file, path, service):
         ):  # check to see if the environment variables in the current environment or not
             for access_key in access_keys:
                 if env.get(access_key) is None:
-                    print(f"Access Key: {access_key} not found. Exiting Start")
+                    log.info(f"Access Key: {access_key} not found. Exiting Start")
                     sys.exit(1)
                 else:
                     env_stage[access_key] = env.get(access_key)
@@ -179,7 +199,7 @@ def up(file, path, service):
             env_file_dict = load_env_file_to_dict(app_env_file)
             for access_key in access_keys:
                 if env_file_dict.get(access_key) is None:
-                    print(f"Access Key: {access_key} not found. Exiting Start")
+                    log.info(f"Access Key: {access_key} not found. Exiting Start")
                     sys.exit(1)
                 else:
                     env_stage[access_key] = env_file_dict[access_key]
@@ -193,9 +213,11 @@ def up(file, path, service):
     env.update(env_stage)
     env["CURVE_CONFIG_FILE"] = curve_config_file
 
-    if service == "curve":
+    if service == SERVICE_NAME_CURVEGW:
         start_curve (curve_config_file, env)
     else:
+        # this will used the cached versions of the models, so its safe to use everytime.
+        download_models_from_hf()
         start_curve _modelserver()
         start_curve (curve_config_file, env)
 
@@ -203,18 +225,19 @@ def up(file, path, service):
 @click.command()
 @click.option(
     "--service",
-    default="all",
+    default=SERVICE_ALL,
     help="Service to down. Options are all, server, curve. Default is all",
 )
 def down(service):
     """Stops Curve."""
 
-    if service not in ["all", "server", "curve"]:
-        print(f"Error: Invalid service {service}. Exiting")
+    if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
+        log.info(f"Error: Invalid service {service}. Exiting")
         sys.exit(1)
-    if service == "server":
+
+    if service == SERVICE_NAME_MODEL_SERVER:
         stop_curve _modelserver()
-    elif service == "curve":
+    elif service == SERVICE_NAME_CURVEGW:
         stop_curve ()
     else:
         stop_curve _modelserver()
@@ -243,74 +266,72 @@ def generate_prompt_targets(file):
     targets.generate_prompt_targets(file)
 
 
-def stream_server_logs(follow):
-    log_file = "~/curve_logs/modelserver.log"
-    log_file_expanded = os.path.expanduser(log_file)
-    stream_command = ["tail"]
-    if follow:
-        stream_command.append("-f")
-    stream_command.append(log_file_expanded)
-    subprocess.run(
-        stream_command,
-        check=True,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    )
-
-
 @click.command()
 @click.option(
     "--service",
-    default="all",
-    help="Service to monitor. By default it will monitor both gateway and model_serve",
+    default=SERVICE_ALL,
+    help="Service to monitor. By default it will monitor both core gateway and server logs.",
+)
+@click.option(
+    "--debug",
+    help="For detailed debug logs to trace calls from curve <> server <> api_server, etc",
+    is_flag=True,
 )
 @click.option("--follow", help="Follow the logs", is_flag=True)
-def logs(service, follow):
-    """Stream logs from curve  services."""
+def logs(service, debug, follow):
+    """Stream logs from access logs services."""
 
-    if service not in ["all", "server", "curve"]:
+    if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
         print(f"Error: Invalid service {service}. Exiting")
         sys.exit(1)
-    curve_process = None
-    if service == "curve" or service == "all":
-        curve_process = multiprocessing.Process(
-            target=stream_gateway_logs, args=(follow,)
-        )
-        curve_process.start()
 
-    server_process = None
-    if service == "server" or service == "all":
-        server_process = multiprocessing.Process(
-            target=stream_server_logs, args=(follow,)
-        )
-        server_process.start()
+    if debug:
+        try:
+            curve_process = None
+            if service == SERVICE_NAME_CURVEGW or service == SERVICE_ALL:
+                curve_process = multiprocessing.Process(
+                    target=stream_gateway_logs, args=(follow,)
+                )
+                curve_process.start()
 
-    if curve_process:
-        curve_process.join()
-    if server_process:
-        server_process.join()
+            server_process = None
+            if service == SERVICE_NAME_MODEL_SERVER or service == SERVICE_ALL:
+                server_process = multiprocessing.Process(
+                    target=stream_server_logs, args=(follow,)
+                )
+                server_process.start()
 
+            if curve_process:
+                curve_process.join()
+            if server_process:
+                server_process.join()
+        except KeyboardInterrupt:
+            log.info("KeyboardInterrupt detected. Exiting.")
+            if curve_process and curve_process.is_alive():
+                curve_process.terminate()
 
-model_list = [
-    "curvelaboratory/Curve-Guard-cpu",
-    "curvelaboratory/Curve-Guard",
-    "curvelaboratory/bge-large-en-v1.5",
-]
+            if server_process and server_process.is_alive():
+                server_process.terminate()
+    else:
+        try:
+            curve_access_logs_process = None
+            curve_access_logs_process = multiprocessing.Process(
+                target=stream_access_logs, args=(follow,)
+            )
+            curve_access_logs_process.start()
 
-
-@click.command()
-def download_models():
-    """Download required models from Hugging Face Hub in the cache directory"""
-    for model in model_list:
-        log.info(f"Downloading model: {model}")
-        snapshot_download(repo_id=model)
+            if curve_access_logs_process:
+                curve_access_logs_process.join()
+        except KeyboardInterrupt:
+            log.info("KeyboardInterrupt detected. Exiting.")
+            if curve_access_logs_process.is_alive():
+                curve_access_logs_process.terminate()
 
 
 main.add_command(up)
 main.add_command(down)
 main.add_command(build)
 main.add_command(logs)
-main.add_command(download_models)
 main.add_command(generate_prompt_targets)
 
 if __name__ == "__main__":
