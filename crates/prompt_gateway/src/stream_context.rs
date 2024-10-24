@@ -13,7 +13,7 @@ use common::common_types::{
 use common::configuration::{Overrides, PromptGuards, PromptTarget};
 use common::consts::{
     CURVE_FC_INTERNAL_HOST, CURVE_FC_MODEL_NAME, CURVE_FC_REQUEST_TIMEOUT_MS,
-    CURVE_INTERNAL_CLUSTER_NAME, CURVE_MESSAGES_KEY, CURVE_MODEL_PREFIX, CURVE_STATE_HEADER,
+    CURVE_INTERNAL_CLUSTER_NAME, MESSAGES_KEY, CURVE_MODEL_PREFIX, CURVE_STATE_HEADER,
     CURVE_UPSTREAM_HOST_HEADER, DEFAULT_EMBEDDING_MODEL, DEFAULT_HALLUCINATED_THRESHOLD,
     DEFAULT_INTENT_MODEL, DEFAULT_PROMPT_TARGET_THRESHOLD, EMBEDDINGS_INTERNAL_HOST,
     HALLUCINATION_INTERNAL_HOST, REQUEST_ID_HEADER, SYSTEM_ROLE, TOOL_ROLE, USER_ROLE,
@@ -461,7 +461,7 @@ impl StreamContext {
                     let upstream_endpoint = endpoint.name;
                     let mut params = HashMap::new();
                     params.insert(
-                        CURVE_MESSAGES_KEY.to_string(),
+                        MESSAGES_KEY.to_string(),
                         callout_context.request_body.messages.clone(),
                     );
                     let curve _messages_json = serde_json::to_string(&params).unwrap();
@@ -688,7 +688,7 @@ impl StreamContext {
             tool_params_json_str
         );
         tool_params.insert(
-            String::from(CURVE_MESSAGES_KEY),
+            String::from(MESSAGES_KEY),
             serde_yaml::to_value(&callout_context.request_body.messages).unwrap(),
         );
         let tool_params_json_str = serde_json::to_string(&tool_params).unwrap();
@@ -772,7 +772,7 @@ impl StreamContext {
             .arguments
             .clone();
         tool_params.insert(
-            String::from(CURVE_MESSAGES_KEY),
+            String::from(MESSAGES_KEY),
             serde_yaml::to_value(&callout_context.request_body.messages).unwrap(),
         );
 
