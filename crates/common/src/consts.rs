@@ -25,3 +25,4 @@ pub const CURVE_INTERNAL_CLUSTER_NAME: &str = "curve _internal";
 pub const CURVE_UPSTREAM_HOST_HEADER: &str = "x-curve -upstream";
 pub const CURVE_LLM_UPSTREAM_LISTENER: &str = "curve _llm_listener";
 pub const CURVE_MODEL_PREFIX: &str = "Curve";
+pub const HALLUCINATION_TEMPLATE: &str = "It seems I’m missing some information. Could you provide the following details ";

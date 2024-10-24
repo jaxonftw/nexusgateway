@@ -20,6 +20,8 @@ services:
       - CHAT_COMPLETION_ENDPOINT=http://host.docker.internal:10000/v1 #this is only because we are running the sample app in the same docker container environemtn as curve
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - ./curve_config.yaml:/app/curve_config.yaml
 
   opentelemetry:
     build:
