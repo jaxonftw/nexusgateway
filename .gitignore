@@ -31,3 +31,4 @@ curve _logs/
 dist/
 crates/*/target/
 crates/target/
+build.log

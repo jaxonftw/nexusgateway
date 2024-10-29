@@ -1,1 +1,1 @@
-docker build -t curve .. -f Dockerfile
+docker build  -f Dockerfile .. -t curvelaboratory/Curve

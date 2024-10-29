@@ -18,6 +18,7 @@ pub const CURVE_ROUTING_HEADER: &str = "x-curve -llm-provider";
 pub const MESSAGES_KEY: &str = "messages";
 pub const CURVE_PROVIDER_HINT_HEADER: &str = "x-curve -llm-provider-hint";
 pub const CHAT_COMPLETIONS_PATH: &str = "/v1/chat/completions";
+pub const HEALTHZ_PATH: &str = "/healthz";
 pub const CURVE_STATE_HEADER: &str = "x-curve -state";
 pub const CURVE_FC_MODEL_NAME: &str = "Curve-Function-1.5B";
 pub const REQUEST_ID_HEADER: &str = "x-request-id";
@@ -25,4 +26,5 @@ pub const CURVE_INTERNAL_CLUSTER_NAME: &str = "curve _internal";
 pub const CURVE_UPSTREAM_HOST_HEADER: &str = "x-curve -upstream";
 pub const CURVE_LLM_UPSTREAM_LISTENER: &str = "curve _llm_listener";
 pub const CURVE_MODEL_PREFIX: &str = "Curve";
-pub const HALLUCINATION_TEMPLATE: &str = "It seems I’m missing some information. Could you provide the following details ";
+pub const HALLUCINATION_TEMPLATE: &str =
+    "It seems I'm missing some information. Could you provide the following details ";
