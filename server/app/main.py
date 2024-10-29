@@ -186,8 +186,8 @@ async def hallucination(req: HallucinationRequest, res: Response):
     start_time = time.perf_counter()
     classifier = zero_shot_model["pipeline"]
 
-    if "curve _messages" in req.parameters:
-        req.parameters.pop("curve _messages")
+    if "messages" in req.parameters:
+        req.parameters.pop("messages")
 
     candidate_labels = {f"{k} is {v}": k for k, v in req.parameters.items()}
 
