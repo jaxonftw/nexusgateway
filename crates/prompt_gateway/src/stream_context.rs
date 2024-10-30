@@ -834,7 +834,7 @@ impl StreamContext {
         );
 
         debug!(
-            "curve => api call, endpoint: {}/{}, body: {}",
+            "curve => api call, endpoint: {}{}, body: {}",
             endpoint.name.as_str(),
             path,
             tool_params_json_str
