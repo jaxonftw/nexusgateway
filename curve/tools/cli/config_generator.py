@@ -34,7 +34,7 @@ def validate_and_render_schema():
     try:
         validate_prompt_config(CURVE_CONFIG_FILE, CURVE_CONFIG_SCHEMA_FILE)
     except Exception as e:
-        print(e)
+        print(str(e))
         exit(1)  # validate_prompt_config failed. Exit
 
     with open(CURVE_CONFIG_FILE, "r") as file:
@@ -73,7 +73,6 @@ def validate_and_render_schema():
 
     print("updated clusters", inferred_clusters)
 
-    config_yaml = add_secret_key_to_llm_providers(config_yaml)
     curve _llm_providers = config_yaml["llm_providers"]
     curve _tracing = config_yaml.get("tracing", {})
     curve_config_string = yaml.dump(config_yaml)

@@ -67,12 +67,16 @@ async def chat_completion(req: ChatMessage, res: Response):
         f"server => curve _function: {client_model_name}, messages: {json.dumps(messages)}"
     )
 
-    resp = const.curve _function_client.chat.completions.create(
-        messages=messages,
-        model=client_model_name,
-        stream=False,
-        extra_body=const.curve _function_generation_params,
-    )
+    try:
+        resp = const.curve _function_client.chat.completions.create(
+            messages=messages,
+            model=client_model_name,
+            stream=False,
+            extra_body=const.curve _function_generation_params,
+        )
+    except Exception as e:
+        logger.error(f"server <= curve _function: error: {e}")
+        raise
 
     tool_calls = const.curve _function_hanlder.extract_tool_calls(
         resp.choices[0].message.content
