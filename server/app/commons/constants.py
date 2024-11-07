@@ -8,6 +8,9 @@ from app.prompt_guard.model_handler import CurveGuardHanlder
 logger = utils.get_server_logger()
 
 curve _function_hanlder = CurveFunctionHandler()
+PREFILL_LIST = ["May", "Could", "Sure", "Definitely", "Certainly", "Of course", "Can"]
+PREFILL_ENABLED = True
+TOOL_CALL_TOKEN = "<tool_call>"
 curve _function_endpoint = "https://api.fc.curve.com/v1"
 curve _function_client = utils.get_client(curve _function_endpoint)
 curve _function_generation_params = {
