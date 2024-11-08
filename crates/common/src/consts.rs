@@ -22,6 +22,7 @@ pub const HEALTHZ_PATH: &str = "/healthz";
 pub const CURVE_STATE_HEADER: &str = "x-curve -state";
 pub const CURVE_FC_MODEL_NAME: &str = "Curve-Function-1.5B";
 pub const REQUEST_ID_HEADER: &str = "x-request-id";
+pub const TRACE_PARENT_HEADER: &str = "traceparent";
 pub const CURVE_INTERNAL_CLUSTER_NAME: &str = "curve _internal";
 pub const CURVE_UPSTREAM_HOST_HEADER: &str = "x-curve -upstream";
 pub const CURVE_LLM_UPSTREAM_LISTENER: &str = "curve _llm_listener";

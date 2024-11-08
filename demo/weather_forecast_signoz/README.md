@@ -25,3 +25,5 @@ Curve gateway publishes stats endpoint at http://localhost:19901/stats. In this 
 
 Here is a sample interaction,
 <img width="575" alt="image" src="https://github.com/user-attachments/assets/e0929490-3eb2-4130-ae87-a732aea4d059">
+
+1. Signoz UI: http://localhost:3301
