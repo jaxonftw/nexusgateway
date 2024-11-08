@@ -15,7 +15,7 @@
         "LLM": "1",
         "CHAT_COMPLETION_ENDPOINT": "http://localhost:10000/v1",
         "STREAMING": "True",
-        "CURVE_CONFIG": "../demos/function_calling/curve_config.yaml"
+        "CURVE_CONFIG": "../demos/weather_forecast/curve_config.yaml"
       }
     },
     {
