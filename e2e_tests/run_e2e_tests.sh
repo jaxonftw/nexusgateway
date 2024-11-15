@@ -29,15 +29,11 @@ cd ../demos/weather_forecast
 docker compose up weather_forecast_service --build -d
 cd -
 
-print_disk_usage
-
 log building and install model server
 log =================================
 cd ../server
 poetry install
 cd -
-
-print_disk_usage
 
 log building and installing curve cli
 log ==================================
@@ -45,15 +41,11 @@ cd ../curve /tools
 sh build_cli.sh
 cd -
 
-print_disk_usage
-
 log building docker image for curve  gateway
 log ======================================
 cd ../
 curve build
 cd -
-
-print_disk_usage
 
 log startup curve  gateway with function calling demo
 cd ..
@@ -63,8 +55,6 @@ curve down
 curve up demos/weather_forecast/curve_config.yaml
 kill $server_tail_pid
 cd -
-
-print_disk_usage
 
 log running e2e tests
 log =================
