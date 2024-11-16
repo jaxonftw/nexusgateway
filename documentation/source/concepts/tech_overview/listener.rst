@@ -21,8 +21,8 @@ Upstream (Egress)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Curve automatically configures a listener to route requests from your application to upstream LLM API providers (or hosts).
 When you start Curve, it creates a listener for egress traffic based on the presence of the ``listener`` configuration
-section in the configuration file. Curve binds itself to a local address such as ``127.0.0.1:9000/v1`` or a DNS-based
-address like ``curve .local:9000/v1`` for outgoing traffic. For more details on LLM providers, read :ref:`here <llm_provider>`.
+section in the configuration file. Curve binds itself to a local address such as ``127.0.0.1:12000/v1`` or a DNS-based
+address like ``curve .local:12000/v1`` for outgoing traffic. For more details on LLM providers, read :ref:`here <llm_provider>`.
 
 Configure Listener
 ^^^^^^^^^^^^^^^^^^
