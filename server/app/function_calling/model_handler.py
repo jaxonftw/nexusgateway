@@ -134,4 +134,4 @@ class CurveFunctionHandler:
             fixed_str += opening_bracket[unmatched_opening]
 
         # Attempt to parse the corrected string to ensure it’s valid JSON
-        return fixed_str
+        return fixed_str.replace("'", '"')
