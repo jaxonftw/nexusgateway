@@ -196,7 +196,7 @@ def start_curve _modelserver():
         subprocess.run(
             ["curve_modelserver", "restart"], check=True, start_new_session=True
         )
-        log.info("Successfull ran server")
+        log.info("Successfully ran server")
     except subprocess.CalledProcessError as e:
         log.info(f"Failed to start server. Please check curve_modelserver logs")
         sys.exit(1)
@@ -212,7 +212,7 @@ def stop_curve _modelserver():
             ["curve_modelserver", "stop"],
             check=True,
         )
-        log.info("Successfull stopped the curve server")
+        log.info("Successfully stopped the curve server")
     except subprocess.CalledProcessError as e:
         log.info(f"Failed to start server. Please check curve_modelserver logs")
         sys.exit(1)

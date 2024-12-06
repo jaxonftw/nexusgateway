@@ -171,7 +171,7 @@ def up(file, path, service):
         log.info(f"Error: {str(e)}")
         sys.exit(1)
 
-    log.info("Starging curve  model server and curve  gateway")
+    log.info("Starting curve  model server and curve  gateway")
 
     # Set the CURVE_CONFIG_FILE environment variable
     env_stage = {}
