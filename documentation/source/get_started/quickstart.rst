@@ -25,7 +25,7 @@ Curve's CLI allows you to manage and interact with the Curve gateway efficiently
 
    $ python -m venv venv
    $ source venv/bin/activate   # On Windows, use: venv\Scripts\activate
-   $ pip install curve==0.1.5
+   $ pip install curve==0.1.6
 
 
 Build AI Agent with Curve Gateway

@@ -19,7 +19,7 @@ source venv/bin/activate
 
 ### Step 3: Run the build script
 ```bash
-pip install curve
+pip install curve==0.1.6
 ```
 
 ## Uninstall Instructions: curve CLI
@@ -48,7 +48,7 @@ source venv/bin/activate
 
 ### Step 3: Run the build script
 ```bash
-sh build_cli.sh
+poetry install
 ```
 
 ### Step 4: build Curve

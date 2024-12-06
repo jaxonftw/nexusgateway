@@ -39,7 +39,7 @@ cd -
 log building and installing curve cli
 log ==================================
 cd ../curve /tools
-sh build_cli.sh
+poetry install
 cd -
 
 log building docker image for curve  gateway
