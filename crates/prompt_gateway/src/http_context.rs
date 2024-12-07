@@ -1,10 +1,8 @@
 use crate::stream_context::{ResponseHandlerType, StreamCallContext, StreamContext};
 use common::{
-    common_types::{
-        open_ai::{
-            to_server_events, CurveState, ChatCompletionStreamResponse, ChatCompletionsRequest,
-        },
-        PromptGuardRequest, PromptGuardTask,
+    api::{
+        open_ai::{self, CurveState, ChatCompletionStreamResponse, ChatCompletionsRequest},
+        prompt_guard::{PromptGuardRequest, PromptGuardTask},
     },
     consts::{
         CURVE_FC_MODEL_NAME, CURVE_INTERNAL_CLUSTER_NAME, CURVE_STATE_HEADER,
@@ -324,7 +322,7 @@ impl HttpContext for StreamContext {
                     ),
                 ];
 
-                let mut response_str = to_server_events(chunks);
+                let mut response_str = open_ai::to_server_events(chunks);
                 // append the original response from the model to the stream
                 response_str.push_str(&body_utf8);
                 self.set_http_response_body(0, body_size, response_str.as_bytes());
