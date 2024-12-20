@@ -22,7 +22,7 @@ start_demo() {
   echo "Starting Curve with curve_config.yaml..."
   curve up curve_config.yaml
 
-  # Step 4: Start Network Agent
+  # Step 4: Start developer services
   echo "Starting Network Agent using Docker Compose..."
   docker compose up -d  # Run in detached mode
 }

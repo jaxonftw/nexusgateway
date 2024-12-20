@@ -1,5 +1,9 @@
+use std::str::FromStr;
+
 use common::errors::ServerError;
 use common::stats::IncrementingMetric;
+use http::StatusCode;
+use log::{debug, warn};
 use proxy_wasm::traits::Context;
 
 use crate::stream_context::{ResponseHandlerType, StreamContext};
@@ -19,76 +23,34 @@ impl Context for StreamContext {
             .expect("invalid token_id");
         self.metrics.active_http_calls.increment(-1);
 
-        /*
-        state transition
+        let body = self
+            .get_http_call_response_body(0, body_size)
+            .unwrap_or(vec![]);
 
-        graph LR
-
-        on_http_request_body --> prompt received
-        prompt received --> get embeddings & curve  guard
-        curve  guard --> get embeddings
-        get embeddings --> zeroshot intent
-
-        ┌──────────────────────┐   ┌─────────────────┐   ┌────────────────┐   ┌─────────────────┐
-        │                      │   │                 │   │                │   │                 │
-        │ on_http_request_body ├──►│ prompt received ├──►│ get embeddings ├──►│ zeroshot intent │
-        │                      │   │                 │   │                │   │                 │
-        └──────────────────────┘   └────────┬────────┘   └────────────────┘   └─────────────────┘
-                                            │                     ▲
-                                            │                     │
-                                            │                     │
-                                            │            ┌────────┴───────┐
-                                            │            │                │
-                                            └───────────►│   curve  guard   │
-                                                         │                │
-                                                         └────────────────┘
-
-
-        continue from zeroshot intent
-
-        graph LR
-
-        zeroshot intent --> curve _fc
-        zeroshot intent --> default prompt target
-        curve _fc --> developer api call & hallucination check
-        hallucination check --> parameter gathering & developer api call
-        developer api call --> resume request to llm
-
-
-        ┌─────────────────┐   ┌───────────────────────┐   ┌─────────────────────┐   ┌───────────────────────┐
-        │                 │   │                       │   │                     │   │                       │
-        │ zeroshot intent ├──►│        curve _fc        ├──►│  developer api call ├──►│ resume request to llm │
-        │                 │   │                       │   │                     │   │                       │
-        └────────┬────────┘   └───────────┬───────────┘   └─────────────────────┘   └───────────────────────┘
-               │                        │                          ▲
-               │                        └─────────────┐            │
-               │                                      │            │
-               │            ┌───────────────────────┐ │ ┌──────────┴──────────┐   ┌───────────────────────┐
-               │            │                       │ │ │                     │   │                       │
-               └───────────►│ default prompt target │ └▲│ hallucination check ├──►│  parameter gathering  │
-                            │                       │   │                     │   │                       │
-                            └───────────────────────┘   └─────────────────────┘   └───────────────────────┘
-
-
-        using https://mermaid-ascii.art/
-        */
-
-        if let Some(body) = self.get_http_call_response_body(0, body_size) {
-            #[cfg_attr(any(), rustfmt::skip)]
-            match callout_context.response_handler_type {
-                ResponseHandlerType::CurveGuard => self.curve _guard_handler(body, callout_context),
-                ResponseHandlerType::Embeddings => self.embeddings_handler(body, callout_context),
-                ResponseHandlerType::ZeroShotIntent => self.zero_shot_intent_detection_resp_handler(body, callout_context),
-                ResponseHandlerType::CurveFC => self.curve _fc_response_handler(body, callout_context),
-                ResponseHandlerType::Hallucination => self.hallucination_classification_resp_handler(body, callout_context),
-                ResponseHandlerType::FunctionCall => self.api_call_response_handler(body, callout_context),
-                ResponseHandlerType::DefaultTarget =>self.default_target_handler(body, callout_context),
-            }
-        } else {
-            self.send_server_error(
-                ServerError::LogicError(String::from("No response body in inline HTTP request")),
-                None,
+        let http_status = self
+            .get_http_call_response_header(":status")
+            .unwrap_or(StatusCode::OK.as_str().to_string());
+        debug!("http call response code: {}", http_status);
+        if http_status != StatusCode::OK.as_str() {
+            let server_error = ServerError::Upstream {
+                host: callout_context.upstream_cluster.unwrap(),
+                path: callout_context.upstream_cluster_path.unwrap(),
+                status: http_status.clone(),
+                body: String::from_utf8(body).unwrap(),
+            };
+            warn!("filter received non 2xx code: {:?}", server_error);
+            return self.send_server_error(
+                server_error,
+                Some(StatusCode::from_str(http_status.as_str()).unwrap()),
             );
+        }
+
+        debug!("http call response handler type: {:?}", callout_context.response_handler_type);
+        #[cfg_attr(any(), rustfmt::skip)]
+        match callout_context.response_handler_type {
+            ResponseHandlerType::CurveFC => self.curve _fc_response_handler(body, callout_context),
+            ResponseHandlerType::FunctionCall => self.api_call_response_handler(body, callout_context),
+            ResponseHandlerType::DefaultTarget =>self.default_target_handler(body, callout_context),
         }
     }
 }

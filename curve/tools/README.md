@@ -19,7 +19,7 @@ source venv/bin/activate
 
 ### Step 3: Run the build script
 ```bash
-pip install curve==0.1.6
+pip install curve==0.1.7
 ```
 
 ## Uninstall Instructions: curve CLI

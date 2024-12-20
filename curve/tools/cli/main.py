@@ -16,10 +16,9 @@ from cli.core import (
     stop_curve _modelserver,
     start_curve ,
     stop_curve ,
-    stream_gateway_logs,
-    stream_server_logs,
-    stream_access_logs,
     download_models_from_hf,
+    stream_access_logs,
+    stream_gateway_logs,
 )
 from cli.consts import (
     KATANEMO_DOCKERHUB_REPO,
@@ -138,16 +137,27 @@ def build(service):
     default=SERVICE_ALL,
     help="Service to start. Options are server, curve.",
 )
-def up(file, path, service):
+@click.option(
+    "--foreground",
+    default=False,
+    help="Run Curve in the foreground. Default is False",
+    is_flag=True,
+)
+def up(file, path, service, foreground):
     """Starts Curve."""
     if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
         log.info(f"Error: Invalid service {service}. Exiting")
         sys.exit(1)
 
+    if service == SERVICE_ALL and foreground:
+        # foreground can only be specified when starting individual services
+        log.info("foreground flag is only supported for individual services. Exiting.")
+        sys.exit(1)
+
     if service == SERVICE_NAME_MODEL_SERVER:
         log.info("Download curve models from HuggingFace...")
         download_models_from_hf()
-        start_curve _modelserver()
+        start_curve _modelserver(foreground)
         return
 
     if file:
@@ -214,12 +224,11 @@ def up(file, path, service):
     env.update(env_stage)
 
     if service == SERVICE_NAME_CURVEGW:
-        start_curve (curve_config_file, env)
+        start_curve (curve_config_file, env, foreground=foreground)
     else:
-        # this will used the cached versions of the models, so its safe to use everytime.
         download_models_from_hf()
-        start_curve _modelserver()
-        start_curve (curve_config_file, env)
+        start_curve _modelserver(foreground)
+        start_curve (curve_config_file, env, foreground=foreground)
 
 
 @click.command()
@@ -268,64 +277,36 @@ def generate_prompt_targets(file):
 
 @click.command()
 @click.option(
-    "--service",
-    default=SERVICE_ALL,
-    help="Service to monitor. By default it will monitor both core gateway and server logs.",
-)
-@click.option(
     "--debug",
     help="For detailed debug logs to trace calls from curve <> server <> api_server, etc",
     is_flag=True,
 )
 @click.option("--follow", help="Follow the logs", is_flag=True)
-def logs(service, debug, follow):
+def logs(debug, follow):
     """Stream logs from access logs services."""
 
-    if service not in [SERVICE_NAME_CURVEGW, SERVICE_NAME_MODEL_SERVER, SERVICE_ALL]:
-        print(f"Error: Invalid service {service}. Exiting")
-        sys.exit(1)
-
-    if debug:
-        try:
-            curve_process = None
-            if service == SERVICE_NAME_CURVEGW or service == SERVICE_ALL:
-                curve_process = multiprocessing.Process(
-                    target=stream_gateway_logs, args=(follow,)
-                )
-                curve_process.start()
-
-            server_process = None
-            if service == SERVICE_NAME_MODEL_SERVER or service == SERVICE_ALL:
-                server_process = multiprocessing.Process(
-                    target=stream_server_logs, args=(follow,)
-                )
-                server_process.start()
-
-            if curve_process:
-                curve_process.join()
-            if server_process:
-                server_process.join()
-        except KeyboardInterrupt:
-            log.info("KeyboardInterrupt detected. Exiting.")
-            if curve_process and curve_process.is_alive():
-                curve_process.terminate()
-
-            if server_process and server_process.is_alive():
-                server_process.terminate()
-    else:
-        try:
-            curve_access_logs_process = None
-            curve_access_logs_process = multiprocessing.Process(
-                target=stream_access_logs, args=(follow,)
+    curve_process = None
+    try:
+        if debug:
+            curve_process = multiprocessing.Process(
+                target=stream_gateway_logs, args=(follow,)
             )
-            curve_access_logs_process.start()
+            curve_process.start()
 
-            if curve_access_logs_process:
-                curve_access_logs_process.join()
-        except KeyboardInterrupt:
-            log.info("KeyboardInterrupt detected. Exiting.")
-            if curve_access_logs_process.is_alive():
-                curve_access_logs_process.terminate()
+        curve_access_logs_process = multiprocessing.Process(
+            target=stream_access_logs, args=(follow,)
+        )
+        curve_access_logs_process.start()
+        curve_access_logs_process.join()
+
+        if curve_process:
+            curve_process.join()
+    except KeyboardInterrupt:
+        log.info("KeyboardInterrupt detected. Exiting.")
+        if curve_access_logs_process.is_alive():
+            curve_access_logs_process.terminate()
+        if curve_process and curve_process.is_alive():
+            curve_process.terminate()
 
 
 main.add_command(up)

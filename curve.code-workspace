@@ -17,8 +17,16 @@
       "path": "server"
     },
     {
-      "name": "e2e_tests",
-      "path": "e2e_tests"
+      "name": "tests_e2e",
+      "path": "tests/e2e"
+    },
+    {
+      "name": "tests_curve",
+      "path": "tests/curve"
+    },
+    {
+      "name": "tests_modelserver",
+      "path": "tests/modelserver"
     },
     {
       "name": "chatbot_ui",
@@ -41,6 +49,7 @@
       "eamodio.gitlens",
       "ms-python.black-formatter",
       "tamasfe.even-better-toml",
+      "esbenp.prettier-vscode",
       ]
   }
 }
