@@ -22,9 +22,7 @@ CURVE_CLIENT = OpenAI(base_url=CURVE_ENDPOINT, api_key=CURVE_API_KEY)
 # Define model names
 CURVE_INTENT_MODEL_ALIAS = "Curve-Intent"
 CURVE_FUNCTION_MODEL_ALIAS = "Curve-Function"
-
-logger.info("loading prompt guard model ...")
-curve _guard_model = get_guardrail_handler()
+CURVE_GUARD_MODEL_ALIAS = "curvelaboratory/Curve-Guard"
 
 # Define model handlers
 handler_map = {
@@ -34,5 +32,5 @@ handler_map = {
     "Curve-Function": CurveFunctionHandler(
         CURVE_CLIENT, CURVE_FUNCTION_MODEL_ALIAS, CurveFunctionConfig
     ),
-    "Curve-Guard": curve _guard_model,
+    "Curve-Guard": get_guardrail_handler(CURVE_GUARD_MODEL_ALIAS),
 }
