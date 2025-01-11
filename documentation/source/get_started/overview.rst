@@ -7,6 +7,12 @@ Welcome to Curve, the intelligent prompt gateway designed to help developers bui
 In this documentation, you will learn how to quickly set up Curve to trigger API calls via prompts, apply prompt guardrails without writing any application-level logic,
 simplify the interaction with upstream LLMs, and improve observability all while simplifying your application development process.
 
+.. figure:: /_static/img/curve _network_diagram_high_level.png
+   :width: 100%
+   :align: center
+
+   High-level network flow of where Curve Gateway sits in your agentic stack. Designed for both ingress and egress prompt traffic.
+
 
 Get Started
 -----------
