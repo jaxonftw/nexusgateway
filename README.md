@@ -57,7 +57,7 @@ Check out what's possible:
    ```bash
    python -m venv venv
    source venv/bin/activate
-   pip install curvegw
+   pip install server/ #make sure you're in the curve directory
    ```
 
 3. Create your first agent:
