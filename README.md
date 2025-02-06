@@ -3,7 +3,7 @@
 <div align="center">
   
   [![Website](https://img.shields.io/badge/🌐_Visit_Our_Website-curvegateway.com-2ea44f?style=for-the-badge)](https://curvegateway.com)
-  [![Discord](https://img.shields.io/badge/Discord-Coming_Soon!-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/coming-soon)
+  [![Discord](https://img.shields.io/badge/Discord-Coming_Soon!-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/YyRfkJGy9u)
   [![Twitter](https://img.shields.io/badge/Follow_Us-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/curvegateway)
   
   <h1>Transform Your AI Apps</h1>
